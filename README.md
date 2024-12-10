@@ -1,4 +1,7 @@
-Prior to implementation Project Overview:
+Customisable Preset Timers 
+
+
+Project Vision:
 
 This application will allow you to add timers and alarms to specific days of the week. Preset timers will be included on the sidebar with their own customisation options, including alarm volume, 
 alarm sound(including an option to import your own alarm sound),  alarm notifications from the browser window(on or off) both for start time and end time, day(s) of the week to set, start time, end time or duration, duration of the alarm, 
@@ -9,4 +12,4 @@ a graphical user interface which will display all currently active timers as box
 calendar like format - with the currently active timers displayed at the time they are set in a list. 
 These are the basic functionality of this single page application
 
--After implementation overview to be determined
+

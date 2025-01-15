@@ -1,0 +1,18 @@
+iframe {
+    display: block;
+    border-style: solid;
+    margin: 0 auto;
+    width: 1400px;
+    height: 800px;
+}
+
+button {
+    display:inline-block;
+    place-items:right;
+}
+
+.windowtitle {
+    display:inline-block;
+    color: red;
+    right:500px;
+}

@@ -1,9 +1,8 @@
-.windowtitle {
+.pagetitle {
     display: inline-block;
-    color: black;
-    right: 500px;
+    font-family:'Franklin Gothic';
+    color:darkolivegreen;
 }
-
 iframe {
     display: block;
     border-style: solid;
@@ -11,7 +10,10 @@ iframe {
     width: 1400px;
     height: 800px;
 }
-
+.textcontent {
+    font-family:'Franklin Gothic';
+    color:black;
+}
 .button {
     margin:5px;
     width:70px;
@@ -21,6 +23,20 @@ iframe {
 .buttonposition {
     position:relative;
     height:30px;
+}
+.windowtitle {
+    font-family:'Yu Gothic';
+    color:black;
+    text-align:center;
+}
+.pageBg {
+    background-color:cornflowerblue;
+}
+.homepageBg {
+    background-color:white;
+}
+.customiseBg {
+    background-color:white;
 }
 #homepage {
     display: inline-block;

@@ -55,7 +55,66 @@
     right: 0px;
     bottom: 0px;
 }
+/* --------Customisation Window Styles-------- */
 #customise {
+    position: absolute;
+    background-color: white;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+}
+.customiseContent {
+    position: absolute;
+    left: 2%;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    margin-left:20px;
+    margin-right: 20px;
+    background-color: brown;
+}
+.sidebar {
+    position: absolute;
+    left:0px;
+    width:2%;
+    top: 0px;
+    bottom: 0px;
+    background-color:burlywood;
+}
+.rotatedText {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    transform: rotate(-90deg);
+    font-size: small;
+}
+.sidebarButton {
+    position:absolute;
+    left:0px;
+    right:0px;
+    height:70px;
+    border: 1px solid black;
+    background-color:orange;
+}
+#exampletimerButton {
+    top:0px;
+}
+#exampletimerButton2 {
+    top: 71px;
+}
+#example {
+
+}
+/* --------Running Window Styles-------- */
+#running {
     position: absolute;
     background-color: white;
     padding-left: 2%;
@@ -64,11 +123,14 @@
     right: 0px;
     bottom: 0px;
 }
-#running {
-
-}
 #listactive {
-
+    position: absolute;
+    background-color: white;
+    padding-left: 2%;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
 }
 #homepageButton {
     display: inline-block;

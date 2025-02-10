@@ -7,16 +7,54 @@
     <script src="main.js" async></script>
 </head>
 <body class="pageBg">
+
     <div class="pagetitle">
         <h1>Customisable Preset Timers</h1>
     </div>
+
     <div class="buttonposition">
-        <div class="clickedButton" id="homepage">Homepage</div>
-        <div class="button" id="customise">Customise</div>
-        <div class="button" id="running">Running</div>
-        <div class="button" id="listactive">ListActive</div>
+        <div class="clickedButton" id="homepageButton">Homepage</div>
+        <div class="button" id="customiseButton">Customise</div>
+        <div class="button" id="runningButton">Running</div>
+        <div class="button" id="listactiveButton">ListActive</div>
     </div>
-    <iframe src="homepage.html"></iframe>
+
+    <div class="fullwindow">
+
+        <div id="homepage" style="display: block">
+            <div class="textcontent">
+                <div class="windowtitle">
+                    <h1>Homepage Window</h1>
+                </div>
+                <h2>What is this application?</h2>
+                <p>This is a single page application where you can add multiple timers to different times at different days of the week</p>
+                <p>These timers can be customised from a preset option found in the customise window tab at the top of the page</p>
+                <h3>Customisation includes options such as: </h3>
+                <ul>
+                    <li>Timer name</li>
+                    <li>Start time</li>
+                    <li>End time or duration</li>
+                    <li>Specific days of the week to apply the timer to</li>
+                    <li>Browser notification for start time and end time of timer</li>
+                    <li>Alarm sound(option to import your own alarm sound)</li>
+                    <li>Alarm volume</li>
+                    <li>Alarm duration</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="customise" style="display: none">
+            <div class="windowtitle">
+                <h1>Customisation Window</h1>
+            </div>
+        </div>
+
+        <div id="running" style="display:none"></div>
+        <div id="listactive" style="display:none"></div>
+    </div>
+
+    <!--<iframe src="homepage.html"></iframe>-->
 </body>
-<!-- COMMENT -->
+<!-- Need to have a window div instead of the iframe which has a box inside, another div inside the box with absolute positioning that toggles the display 'block' or 'none' based on javascript 
+    with the window content inside that div-->
 </html>

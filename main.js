@@ -1,56 +1,44 @@
 //First I want to change window when I click on a tab. I will need to add a listener to each id and change the background color of the button accordingly
 
-let homepageButton = document.getElementById("homepage");
-let customiseButton = document.getElementById("customise");
-let runningButton = document.getElementById("running");
-let listButton = document.getElementById("listactive");
-//let windowTabs = document.getElementsByClassName("button"); //returns an array
+let homepageButton = document.getElementById("homepageButton");
+let customiseButton = document.getElementById("customiseButton");
+let runningButton = document.getElementById("runningButton");
+let listButton = document.getElementById("listactiveButton");
+let homepage = document.getElementById("homepage");
+let customise = document.getElementById("customise");
+let running = document.getElementById("running");
+let listActive = document.getElementById("listactive");
+let arrayPairs = [[homepageButton, homepage], [customiseButton, customise], [runningButton, running], [listButton, listActive]]
+let currentClickedArrayPair = 0; //can be used for validation of the current window
 
-function clickedHomepage() { 
+
+const clickedButton = (arrayPairIndex) => { //new arrow function - the arrayPairIndex parameter is the arrayPairs index corresponding to the button that has been clicked
     var activeWindowElement = document.getElementsByClassName("clickedButton")[0];
-    if (activeWindowElement.id != "homepage") {
+    if (activeWindowElement.id != arrayPairs[arrayPairIndex][0].id) {
         activeWindowElement.className = "button";
-        homepageButton.className = "clickedButton";
+        arrayPairs[currentClickedArrayPair][1].style.display = "none"; //I set the corresponding window for the previously clicked button to display = none.
+        arrayPairs[arrayPairIndex][0].className = "clickedButton";
+        arrayPairs[arrayPairIndex][1].style.display = "block";
+        currentClickedArrayPair = arrayPairIndex;
     }
     else {
         return;
     }
+    return;
 }
 
-function clickedCustomise() {
-    var activeWindowElement = document.getElementsByClassName("clickedButton")[0];
-    if (activeWindowElement.id != "customise") {
-        activeWindowElement.className = "button";
-        customiseButton.className = "clickedButton";
-    }
-    else {
-        return;
-    }
-}
 
-function clickedRunning() {
-    var activeWindowElement = document.getElementsByClassName("clickedButton")[0];
-    if (activeWindowElement.id != "running") {
-        activeWindowElement.className = "button";
-        runningButton.className = "clickedButton";
+document.addEventListener("click", (e) => { //pass the event as a parameter to the inline event handler function. 
+    if (e.target.id == "homepageButton") {
+        clickedButton(0);
     }
-    else {
-        return;
+    else if (e.target.id == "customiseButton") {
+        clickedButton(1);
     }
-}
-
-function clickedListActive() {
-    var activeWindowElement = document.getElementsByClassName("clickedButton")[0];
-    if (activeWindowElement.id != "listactive") {
-        activeWindowElement.className = "button";
-        listButton.className = "clickedButton";
+    else if (e.target.id == "runningButton") {
+        clickedButton(2);
     }
-    else {
-        return;
-    }
-}
-
-homepageButton.addEventListener("click", clickedHomepage);
-customiseButton.addEventListener("click", clickedCustomise);
-runningButton.addEventListener("click", clickedRunning);
-listButton.addEventListener("click", clickedListActive);
+    else if (e.target.id == "listactiveButton") {
+        clickedButton(3);
+    } 
+    });

@@ -12,6 +12,8 @@ let exampleButton = document.getElementById("exampletimerButton");
 let example2Button = document.getElementById("exampletimerButton2");
 let exampleTimer = document.getElementById("example");
 let example2Timer = document.getElementById("example2");
+let slider = document.getElementById("myslider");
+let sliderValue = document.getElementById("sliderValue");
 let arrayPairs = [[homepageButton, homepage], [customiseButton, customise], [runningButton, running], [listButton, listActive], [exampleButton, exampleTimer], [example2Button, example2Timer]]
 const windowTabNumber = 4;
 let currentClickedWindowPair = 0; //can be used for validation of the current window
@@ -63,4 +65,9 @@ document.addEventListener("click", (e) => { //pass the event as a parameter to t
     else if (e.target.id == "exampletimerButton2" || e.target.parentElement.id == "exampletimerButton2") {
         clickedButton(5);
     }
-    });
+});
+
+sliderValue.innerHTML = slider.value;
+slider.oninput = () => { //we define an event handler for the oninput event listener of the slider element
+    sliderValue.innerHTML = slider.value;
+}

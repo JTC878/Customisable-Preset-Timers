@@ -72,7 +72,9 @@
     bottom: 0px;
     right: 0px;
     margin-left:20px;
+    padding-left: 20px;
     margin-right: 20px;
+    padding-right: 20px;
     background-color: brown;
 }
 .sidebar {
@@ -112,13 +114,7 @@
     top:0px;
 }
 #exampletimerButton2 {
-    top: 71px;
-}
-#example {
-
-}
-#example2 {
-
+    top: 70px;
 }
 /* --------Running Window Styles-------- */
 #running {

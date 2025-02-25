@@ -46,6 +46,10 @@ const clickedButton = (arrayPairIndex) => { //new arrow function - the arrayPair
     return;
 }
 
+//Create a event handler function that responds to a an apply button press, all values associated with the timer will be attributes of a timer object, this timer object is then pushed to an array of active timers.
+//Create a function for evaluating the array of timer objects, if their attribute has 'Run now'(Or start time is matched) then remove it from the active array and add to the running array as long it is empty.
+//Create a function that is the result of evaluating the running array to see if there is a timer object. Run this function if there is a timer object until its duration reaches 0 decrementing its attribute for each cycle. 
+
 document.addEventListener("click", (e) => { //pass the event as a parameter to the inline event handler function. 
     if (e.target.id == "homepageButton") {
         clickedButton(0);

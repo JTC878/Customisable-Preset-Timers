@@ -50,14 +50,21 @@
                         <h1>Example Timer Preset</h1>
                     </div>
                     Hello World!
-                    <output id="sliderValue"></output>
-                    <input type="range" min="1" max="100" value="50" class="slider" id="myslider"/>
-                    <input type="checkbox" />
-                    <input type="radio" id="exone" name="radiogroup"/>
-                    <label for="exone">One</label>
-                    <input type="radio" id="extwo" name="radiogroup"/>
-                    <label for="extwo">Two</label>
-                    <input type="button" value="Apply"/>
+                    <div class="customisationOptions">
+                        <div class="slider">
+                            <label for="myslider" style="display:block">Duration</label>
+                            <input type="range" min="1" max="100" value="50" id="myslider" />
+                            <output id="sliderValue"></output>
+                        </div>
+                        <input type="checkbox" class="checkboxButton"/>
+                        <div class="radioButton">
+                            <input type="radio" checked="checked" id="exone" name="radiogroup" />
+                            <label for="exone">Run Now</label>
+                            <input type="radio" id="extwo" name="radiogroup" />
+                            <label for="extwo">Choose Start Time</label>
+                        </div>
+                        <input type="button" value="Apply" class="applyButton"/>
+                    </div>
                 </div>
                 <div id="example2" style="display: none">
                     <div class="windowtitle">
@@ -79,6 +86,13 @@
         <div id="running" style="display:none">
             <div class="windowtitle">
                 <h1>Running Window</h1>
+            </div>
+            <div class="runningInfo">
+                <h2>Timer running: <strong id="runningtext">No</strong></h2>
+                <div class="timerInfo">
+                    <p>Duration of Currently Running Timer</p>
+                    <h1 id="durationValue">0</h1>
+                </div>
             </div>
         </div>
 

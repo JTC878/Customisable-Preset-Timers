@@ -1,37 +1,41 @@
 //First I want to change window when I click on a tab. I will need to add a listener to each id and change the background color of the button accordingly
 
-let homepageButton = document.getElementById("homepageButton");
-let customiseButton = document.getElementById("customiseButton");
-let runningButton = document.getElementById("runningButton");
-let listButton = document.getElementById("listactiveButton");
-let homepage = document.getElementById("homepage");
-let customise = document.getElementById("customise");
-let running = document.getElementById("running");
-let listActive = document.getElementById("listactive");
-let exampleButton = document.getElementById("exampletimerButton");
-let example2Button = document.getElementById("exampletimerButton2");
-let exampleTimer = document.getElementById("example");
-let example2Timer = document.getElementById("example2");
+
 let slider = document.getElementById("myslider");
 let sliderValue = document.getElementById("sliderValue");
-let arrayPairs = [[homepageButton, homepage], [customiseButton, customise], [runningButton, running], [listButton, listActive], [exampleButton, exampleTimer], [example2Button, example2Timer]]
-const windowTabNumber = 4;
+
+let windowTabPairs = [
+    [document.getElementById("homepageButton"), document.getElementById("homepage")],
+    [document.getElementById("customiseButton"), document.getElementById("customise")],
+    [document.getElementById("runningButton"), document.getElementById("running")],
+    [document.getElementById("listactiveButton"), document.getElementById("listactive")]]
+
+let sidebarTabPairs = [
+    [document.getElementById("exampletimerButton"), document.getElementById("example")],
+    [document.getElementById("exampletimerButton2"), document.getElementById("example2")]]
+
+const windowTabNumber = windowTabPairs.length;
+
 let currentClickedWindowPair = 0; //can be used for validation of the current window
-let currentClickedSidebarPair = windowTabNumber;
+let currentClickedSidebarPair = 0;
 
 const clickedButton = (arrayPairIndex) => { //new arrow function - the arrayPairIndex parameter is the arrayPairs index corresponding to the button that has been clicked
     var classnameClicked = "clickedButton";
     var classnameButton = "button";
+    var arrayPairs = windowTabPairs; //this creates a reference of the array
+    var originalArrayPairIndex = arrayPairIndex;
     if (arrayPairIndex >= windowTabNumber) {
         classnameClicked = "clickedSidebarButton";
         classnameButton = "sidebarButton";
+        arrayPairIndex = arrayPairIndex - windowTabNumber;
+        arrayPairs = sidebarTabPairs;
     }
     var activeWindowElement = document.getElementsByClassName(classnameClicked)[0];
     if (activeWindowElement.id != arrayPairs[arrayPairIndex][0].id) {
         activeWindowElement.className = classnameButton;
         arrayPairs[arrayPairIndex][0].className = classnameClicked;
         arrayPairs[arrayPairIndex][1].style.display = "block";
-        if (arrayPairIndex >= windowTabNumber) {
+        if (originalArrayPairIndex >= windowTabNumber) {
             arrayPairs[currentClickedSidebarPair][1].style.display = "none";
             currentClickedSidebarPair = arrayPairIndex;
         }

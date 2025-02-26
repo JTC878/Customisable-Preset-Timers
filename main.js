@@ -3,6 +3,10 @@
 
 let slider = document.getElementById("myslider");
 let sliderValue = document.getElementById("sliderValue");
+let durationValue = document.getElementById("durationValue");
+let runningIndicator = document.getElementById("runningtext")
+let activeTimerArray = new Array();
+let runningTimerArray = new Array();
 
 let windowTabPairs = [
     [document.getElementById("homepageButton"), document.getElementById("homepage")],
@@ -11,13 +15,35 @@ let windowTabPairs = [
     [document.getElementById("listactiveButton"), document.getElementById("listactive")]]
 
 let sidebarTabPairs = [
-    [document.getElementById("exampletimerButton"), document.getElementById("example")],
+    [document.getElementById("exampletimerButton"), document.getElementById("example"), document.getElementsByClassName("exampleFieldValues")],
     [document.getElementById("exampletimerButton2"), document.getElementById("example2")]]
 
 const windowTabNumber = windowTabPairs.length;
 
 let currentClickedWindowPair = 0; //can be used for validation of the current window
 let currentClickedSidebarPair = 0;
+
+const updateRunningDuration = (newDuration) => {
+    durationValue.innerHTML = newDuration;
+}
+
+class Timer {
+    constructor(name, duration, runstate) {
+        this.name = name;
+        this.duration = duration;
+        this.runstate = runstate;
+    }
+
+    decrementDuration() {
+        let p = Number(this.duration);
+        if (p > 0) {
+            p += -1;
+            this.duration = p;
+            updateRunningDuration(this.duration);
+        }
+    }
+}
+
 
 const clickedButton = (arrayPairIndex) => { //new arrow function - the arrayPairIndex parameter is the arrayPairs index corresponding to the button that has been clicked
     var classnameClicked = "clickedButton";
@@ -50,9 +76,67 @@ const clickedButton = (arrayPairIndex) => { //new arrow function - the arrayPair
     return;
 }
 
-//Create a event handler function that responds to a an apply button press, all values associated with the timer will be attributes of a timer object, this timer object is then pushed to an array of active timers.
-//Create a function for evaluating the array of timer objects, if their attribute has 'Run now'(Or start time is matched) then remove it from the active array and add to the running array as long it is empty.
-//Create a function that is the result of evaluating the running array to see if there is a timer object. Run this function if there is a timer object until its duration reaches 0 decrementing its attribute for each cycle. 
+const timerToActiveArray = () => {
+    var valueArray = sidebarTabPairs[currentClickedSidebarPair][2];
+    let name = "%default%";
+    let duration = 0;
+    let runstate = "run_now";
+    for (let i = 0; i < valueArray.length; i++) { //we parse the array for the values we need into the appropriate object. 
+        if (valueArray[i].parentElement.className == "durationSlider") {
+            duration = valueArray[i].value;
+        }
+        else if (valueArray[i].parentElement.className == "nameInput") {
+            name = valueArray[i].value;
+        }
+        else if (valueArray[i].parentElement.className == "radioButton") {
+            if (valueArray[i].checked == "checked") {
+                runstate = "run_now";
+            }
+            else {
+                runstate = "start_time";
+            }
+        }
+    }
+    runstate = "run_now"; //temporary line to make sure arrays don't get filled with unusable objects
+    var newTimerObject = new Timer(name, duration, runstate);
+    activeTimerArray.push(newTimerObject);
+    activeToRunningArray();
+}
+
+const activeToRunningArray = () => {
+    if (runningTimerArray.length > 0) {
+        return;
+    }
+    else if (activeTimerArray.length == 0) {
+        return;
+    }
+    activeTimerArray.forEach(timer => {
+        handleTimerRunstate(timer);
+    });
+}
+
+const handleTimerRunstate = (timer) => {
+    if (runningTimerArray.length > 0) {
+        return;
+    }
+    if (timer.runstate == "run_now") {
+        runningTimerArray.push(timer);
+        var ind = activeTimerArray.indexOf(timer);
+        activeTimerArray.splice(ind, 1);
+    }
+}
+
+const setRunningIndicator = (bool) => {
+    if (bool) {
+        runningIndicator.innerText = "Yes";
+        runningIndicator.style.color = "green";
+    }
+    else {
+        runningIndicator.innerText = "No";
+        runningIndicator.style.color = "red";
+    }
+}
+
 
 document.addEventListener("click", (e) => { //pass the event as a parameter to the inline event handler function. 
     if (e.target.id == "homepageButton") {
@@ -73,9 +157,29 @@ document.addEventListener("click", (e) => { //pass the event as a parameter to t
     else if (e.target.id == "exampletimerButton2" || e.target.parentElement.id == "exampletimerButton2") {
         clickedButton(5);
     }
+    else if (e.target.className == "applyButton") {
+        timerToActiveArray();
+    }
 });
 
 sliderValue.innerHTML = slider.value;
 slider.oninput = () => { //we define an event handler for the oninput event listener of the slider element
     sliderValue.innerHTML = slider.value;
 }
+
+
+setInterval(() => {
+    if (runningTimerArray.length > 0) {
+        runningTimerArray[0].decrementDuration();
+        setRunningIndicator(true);
+    }
+    else {
+        setRunningIndicator(false);
+        return;
+    }
+    if (Number(runningTimerArray[0].duration) == 0) {
+        runningTimerArray.pop();
+        activeToRunningArray();
+    }
+    return;
+}, 1000);

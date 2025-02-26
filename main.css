@@ -126,7 +126,10 @@
 .checkboxButton {
 
 }
-.slider {
+.nameInput {
+
+}
+.durationSlider {
     position: absolute;
     bottom: 10%;
 }
@@ -138,6 +141,8 @@
     width: 100px;
     font-size: 20px;
     background-color: aquamarine;
+}
+.exampleFieldValues {
 }
 #exampletimerButton {
     top:0px;

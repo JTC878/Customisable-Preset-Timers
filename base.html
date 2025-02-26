@@ -51,17 +51,21 @@
                     </div>
                     Hello World!
                     <div class="customisationOptions">
-                        <div class="slider">
+                        <div class="nameInput">
+                            <label for="timerObjectName">Customised Timer Name</label>
+                            <input type="text" id="timerObjectName" class="exampleFieldValues"/>
+                        </div>
+                        <div class="durationSlider">
                             <label for="myslider" style="display:block">Duration</label>
-                            <input type="range" min="1" max="100" value="50" id="myslider" />
+                            <input type="range" min="1" max="100" value="50" id="myslider" class="exampleFieldValues"/>
                             <output id="sliderValue"></output>
                         </div>
                         <input type="checkbox" class="checkboxButton"/>
                         <div class="radioButton">
-                            <input type="radio" checked="checked" id="exone" name="radiogroup" />
-                            <label for="exone">Run Now</label>
-                            <input type="radio" id="extwo" name="radiogroup" />
-                            <label for="extwo">Choose Start Time</label>
+                            <input type="radio" checked="checked" id="run_now" name="radiogroup1" class="exampleFieldValues"/>
+                            <label for="run_now">Run Now</label>
+                            <input type="radio" id="start_time" name="radiogroup1" />
+                            <label for="start_time">Choose Start Time</label>
                         </div>
                         <input type="button" value="Apply" class="applyButton"/>
                     </div>

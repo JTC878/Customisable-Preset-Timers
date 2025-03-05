@@ -4,6 +4,7 @@
 let slider = document.getElementById("myslider");
 let sliderValue = document.getElementById("sliderValue");
 let durationValue = document.getElementById("durationValue");
+let runningName = document.getElementById("timername");
 let runningIndicator = document.getElementById("runningtext")
 let activeTimerArray = new Array();
 let runningTimerArray = new Array();
@@ -104,7 +105,7 @@ const timerToActiveArray = () => {
 }
 
 const activeToRunningArray = () => {
-    if (runningTimerArray.length > 0) {
+    if (isTimerRunning()) {
         return;
     }
     else if (activeTimerArray.length == 0) {
@@ -116,7 +117,7 @@ const activeToRunningArray = () => {
 }
 
 const handleTimerRunstate = (timer) => {
-    if (runningTimerArray.length > 0) {
+    if (isTimerRunning()) {
         return;
     }
     if (timer.runstate == "run_now") {
@@ -134,6 +135,19 @@ const setRunningIndicator = (bool) => {
     else {
         runningIndicator.innerText = "No";
         runningIndicator.style.color = "red";
+    }
+}
+
+const updateRunningName = (newName) => {
+    runningName.innerHTML = newName;
+}
+
+const isTimerRunning = () => {
+    if (runningTimerArray.length > 0) {
+        return true;
+    }
+    else {
+        return false;
     }
 }
 
@@ -160,6 +174,15 @@ document.addEventListener("click", (e) => { //pass the event as a parameter to t
     else if (e.target.className == "applyButton") {
         timerToActiveArray();
     }
+    else if (e.target.className == "stopButton") {
+        if (isTimerRunning()) {
+            runningTimerArray.pop();
+            setRunningIndicator(false);
+            updateRunningName("None");
+            updateRunningDuration(0);
+            activeToRunningArray();
+        }
+    }
 });
 
 sliderValue.innerHTML = slider.value;
@@ -169,12 +192,15 @@ slider.oninput = () => { //we define an event handler for the oninput event list
 
 
 setInterval(() => {
-    if (runningTimerArray.length > 0) {
+    if (isTimerRunning()) {
         runningTimerArray[0].decrementDuration();
         setRunningIndicator(true);
+        updateRunningName(runningTimerArray[0].name);
     }
     else {
         setRunningIndicator(false);
+        updateRunningName("None");
+        updateRunningDuration(0);
         return;
     }
     if (Number(runningTimerArray[0].duration) == 0) {

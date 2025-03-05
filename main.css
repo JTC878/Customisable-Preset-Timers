@@ -176,11 +176,23 @@
 #runningtext {
     color: red;
 }
+#timername {
+    color: gray;
+}
 #durationValue {
     position: absolute;
     left: 50%;
     top: 50%;
 }
+.stopButton {
+    position: absolute;
+    right: 5%;
+    bottom: 5%;
+    height: 50px;
+    width: 100px;
+    font-size: 20px;
+    background-color: darkred;
+} 
 #listactive {
     position: absolute;
     background-color: white;

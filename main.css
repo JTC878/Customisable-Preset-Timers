@@ -123,8 +123,9 @@
     bottom: 20%;
     right: 5%;
 }
-.checkboxButton {
-
+.notificationCheckmark {
+    position: absolute;
+    bottom: 30%;
 }
 .nameInput {
 
@@ -142,9 +143,11 @@
     font-size: 20px;
     background-color: aquamarine;
 }
-.exampleFieldValues {
+.countdownFieldValues {
 }
-#exampletimerButton {
+#countdownTimer {    
+}
+#countdownTimerButton {
     top:0px;
 }
 #exampletimerButton2 {
@@ -193,6 +196,7 @@
     font-size: 20px;
     background-color: darkred;
 } 
+/* --------ListActive Window Styles-------- */
 #listactive {
     position: absolute;
     background-color: white;
@@ -202,6 +206,7 @@
     right: 0px;
     bottom: 0px;
 }
+/*Window tab Styles*/
 #homepageButton {
     display: inline-block;
     position:absolute;

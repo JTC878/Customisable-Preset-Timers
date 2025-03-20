@@ -45,24 +45,27 @@
 
         <div id="customise" style="display: none">
             <div class="customiseContent">
-                <div id="example" style="display: block">
+                <div id="countdownTimer" style="display: block">
                     <div class="windowtitle">
-                        <h1>Example Timer Preset</h1>
+                        <h1>Countdown Timer Preset</h1>
                     </div>
-                    Hello World!
+                    This is the default preset. The timer is used to count down from a specified duration value. An alarm can be set when duration reaches 0.
                     <div class="customisationOptions">
                         <div class="nameInput">
                             <label for="timerObjectName">Customised Timer Name</label>
-                            <input type="text" id="timerObjectName" class="exampleFieldValues"/>
+                            <input type="text" id="timerObjectName" class="countdownFieldValues"/>
                         </div>
                         <div class="durationSlider">
                             <label for="myslider" style="display:block">Duration</label>
-                            <input type="range" min="1" max="100" value="50" id="myslider" class="exampleFieldValues"/>
+                            <input type="range" min="1" max="100" value="50" id="myslider" class="countdownFieldValues"/>
                             <output id="sliderValue"></output>
                         </div>
-                        <input type="checkbox" class="checkboxButton"/>
+                        <div class="notificationCheckmark"> 
+                            <label for="countdownCheckbox1">Browser notification when timer ends</label>
+                            <input type="checkbox" checked="checked" id="countdownCheckbox1" class="countdownFieldValues"/>
+                        </div>
                         <div class="radioButton">
-                            <input type="radio" checked="checked" id="run_now" name="radiogroup1" class="exampleFieldValues"/>
+                            <input type="radio" checked="checked" id="run_now" name="radiogroup1" class="countdownFieldValues"/>
                             <label for="run_now">Run Now</label>
                             <input type="radio" id="start_time" name="radiogroup1" />
                             <label for="start_time">Choose Start Time</label>
@@ -78,8 +81,8 @@
                 </div>
             </div>
             <div class="sidebar">
-                <div class="clickedSidebarButton" id="exampletimerButton">
-                    <div class="rotatedText">Example</div>
+                <div class="clickedSidebarButton" id="countdownTimerButton">
+                    <div class="rotatedText">Countdown</div>
                 </div>
                 <div class="sidebarButton" id="exampletimerButton2">
                     <div class="rotatedText">Example2</div>

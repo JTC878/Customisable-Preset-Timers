@@ -1,6 +1,3 @@
-//First I want to change window when I click on a tab. I will need to add a listener to each id and change the background color of the button accordingly
-
-
 let slider = document.getElementById("myslider");
 let sliderValue = document.getElementById("sliderValue");
 let durationValue = document.getElementById("durationValue");
@@ -16,7 +13,7 @@ let windowTabPairs = [
     [document.getElementById("listactiveButton"), document.getElementById("listactive")]]
 
 let sidebarTabPairs = [
-    [document.getElementById("exampletimerButton"), document.getElementById("example"), document.getElementsByClassName("exampleFieldValues")],
+    [document.getElementById("countdownTimerButton"), document.getElementById("countdownTimer"), document.getElementsByClassName("countdownFieldValues")],
     [document.getElementById("exampletimerButton2"), document.getElementById("example2")]]
 
 const windowTabNumber = windowTabPairs.length;
@@ -29,20 +26,28 @@ const updateRunningDuration = (newDuration) => {
 }
 
 class Timer {
-    constructor(name, duration, runstate) {
+    constructor(name, duration, runstate, notification) {
         this.name = name;
         this.duration = duration;
         this.runstate = runstate;
+        this.notification = notification;
     }
 
     decrementDuration() {
         let p = Number(this.duration);
         if (p > 0) {
             p += -1;
-            this.duration = p;
-            updateRunningDuration(this.duration);
         }
+        this.duration = p;
+        updateRunningDuration(this.duration);
     }
+    
+    displayNotification() {
+        //For now this pauses all scripts until the user clicks the ok button, this also results in the alert popping up before the DOM is updated for duration to reach 0
+        let message = "A %countdown% timer has ended with the name: " + this.name.toString();
+        alert(message); //this can break everything easily if you include attributes wrong
+    }
+    
 }
 
 
@@ -82,6 +87,7 @@ const timerToActiveArray = () => {
     let name = "%default%";
     let duration = 0;
     let runstate = "run_now";
+    let notification = false;
     for (let i = 0; i < valueArray.length; i++) { //we parse the array for the values we need into the appropriate object. 
         if (valueArray[i].parentElement.className == "durationSlider") {
             duration = valueArray[i].value;
@@ -90,16 +96,24 @@ const timerToActiveArray = () => {
             name = valueArray[i].value;
         }
         else if (valueArray[i].parentElement.className == "radioButton") {
-            if (valueArray[i].checked == "checked") {
+            if (valueArray[i].checked) {
                 runstate = "run_now";
             }
             else {
                 runstate = "start_time";
             }
         }
+        else if (valueArray[i].parentElement.className == "notificationCheckmark") {
+            if (valueArray[i].checked) {
+                notification = true;
+            } 
+            else {
+                notification = false;
+            }
+        }
     }
     runstate = "run_now"; //temporary line to make sure arrays don't get filled with unusable objects
-    var newTimerObject = new Timer(name, duration, runstate);
+    var newTimerObject = new Timer(name, duration, runstate, notification);
     activeTimerArray.push(newTimerObject);
     activeToRunningArray();
 }
@@ -151,6 +165,30 @@ const isTimerRunning = () => {
     }
 }
 
+const resetRunningDisplay = () => {
+    setRunningIndicator(false);
+    updateRunningName("None");
+    updateRunningDuration(0);
+}
+
+const stopTimer = () => {
+    if (isTimerRunning()) {
+        runningTimerArray.pop();
+        setRunningIndicator(false);
+        updateRunningName("None");
+        updateRunningDuration(0);
+        activeToRunningArray();
+    }
+}
+
+const endTimer = () => { //refactor into class if needed
+    if (runningTimerArray[0].notification) {
+        runningTimerArray[0].displayNotification();
+    }
+    runningTimerArray.pop();
+    activeToRunningArray();
+}
+
 
 document.addEventListener("click", (e) => { //pass the event as a parameter to the inline event handler function. 
     if (e.target.id == "homepageButton") {
@@ -165,7 +203,7 @@ document.addEventListener("click", (e) => { //pass the event as a parameter to t
     else if (e.target.id == "listactiveButton") {
         clickedButton(3);
     }
-    else if (e.target.id == "exampletimerButton" || e.target.parentElement.id == "exampletimerButton") {
+    else if (e.target.id == "countdownTimerButton" || e.target.parentElement.id == "countdownTimerButton") {
         clickedButton(4);
     }
     else if (e.target.id == "exampletimerButton2" || e.target.parentElement.id == "exampletimerButton2") {
@@ -175,13 +213,7 @@ document.addEventListener("click", (e) => { //pass the event as a parameter to t
         timerToActiveArray();
     }
     else if (e.target.className == "stopButton") {
-        if (isTimerRunning()) {
-            runningTimerArray.pop();
-            setRunningIndicator(false);
-            updateRunningName("None");
-            updateRunningDuration(0);
-            activeToRunningArray();
-        }
+        stopTimer();
     }
 });
 
@@ -196,16 +228,19 @@ setInterval(() => {
         runningTimerArray[0].decrementDuration();
         setRunningIndicator(true);
         updateRunningName(runningTimerArray[0].name);
+        if (Number(runningTimerArray[0].duration) === 0) {
+            endTimer();
+        }
     }
     else {
-        setRunningIndicator(false);
-        updateRunningName("None");
-        updateRunningDuration(0);
+        resetRunningDisplay();
         return;
-    }
-    if (Number(runningTimerArray[0].duration) == 0) {
-        runningTimerArray.pop();
-        activeToRunningArray();
     }
     return;
 }, 1000);
+
+
+
+//TODO define the PRESET names that you will be including to meet the requirements. Such as countdown timers, stopwatch, pomodoro timer etc.. 
+//TODO add more customisation options such as browser notification when timer ends, possibly an alarm sound, alarm volume and duration, start times(time of day and days of the week should be greyed out until the option is chosen)
+//For audio use the Audio object in javascript such as new Audio(""); and .play();

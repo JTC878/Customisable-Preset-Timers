@@ -1,10 +1,15 @@
 let slider = document.getElementById("myslider");
 let sliderValue = document.getElementById("sliderValue");
 let durationValue = document.getElementById("durationValue");
+let toggleTimerInfo = document.getElementById("timerInfo");
 let runningName = document.getElementById("timername");
-let runningIndicator = document.getElementById("runningtext")
+let runningPreset = document.getElementById("timerpreset");
+let runningIndicator = document.getElementById("runningtext");
+let pageTitle = document.getElementById("alertInTitleBlock");
 let activeTimerArray = new Array();
 let runningTimerArray = new Array();
+let alertsBuffer = new Array();
+let timerRunningSwitch = false;
 
 let windowTabPairs = [
     [document.getElementById("homepageButton"), document.getElementById("homepage")],
@@ -25,9 +30,38 @@ const updateRunningDuration = (newDuration) => {
     durationValue.innerHTML = newDuration;
 }
 
+const customAlert = (message) => {
+    const alert = document.createElement("span");
+    alert.classList.add("alertPosition");
+    alert.innerHTML = `<p style="color: red; display: inline;">${message}</p><button>OK</button>`;
+    if (alertsBuffer.length !== 0) {
+        alertsBuffer.push(alert);
+        return;
+    }
+    else {
+        alertsBuffer.push(alert);
+        bufferAlertsRecursion(alert);
+    }
+}
+
+const bufferAlertsRecursion = (alert) => { //this function and the alertBuffer array makes sure that multiple alerts are not displayed at the same time
+    pageTitle.appendChild(alert);
+    alert.querySelector("button").addEventListener("click", () => {
+        alert.remove();
+        alertsBuffer.splice(0, 1);
+        if (alertsBuffer.length === 0) {
+            return;
+        }
+        else {
+            bufferAlertsRecursion(alertsBuffer[0]);
+        }
+    });
+}
+
 class Timer {
     constructor(name, duration, runstate, notification) {
         this.name = name;
+        this.originalDuration = duration;
         this.duration = duration;
         this.runstate = runstate;
         this.notification = notification;
@@ -43,9 +77,9 @@ class Timer {
     }
     
     displayNotification() {
-        //For now this pauses all scripts until the user clicks the ok button, this also results in the alert popping up before the DOM is updated for duration to reach 0
-        let message = "A %countdown% timer has ended with the name: " + this.name.toString();
-        alert(message); //this can break everything easily if you include attributes wrong
+        let message = `A countdown timer has ended with the name ${this.name.toString()} after ${this.originalDuration} seconds`;
+        customAlert(message);
+        //alert(message); //this can break everything easily if you include attributes wrong, it also pauses all scripts.
     }
     
 }
@@ -82,7 +116,7 @@ const clickedButton = (arrayPairIndex) => { //new arrow function - the arrayPair
     return;
 }
 
-const timerToActiveArray = () => {
+const timerToActiveArray = () => { //this function will only run when the apply button is pressed
     var valueArray = sidebarTabPairs[currentClickedSidebarPair][2];
     let name = "%default%";
     let duration = 0;
@@ -94,6 +128,9 @@ const timerToActiveArray = () => {
         }
         else if (valueArray[i].parentElement.className == "nameInput") {
             name = valueArray[i].value;
+            if (name.trim().length === 0) {
+                name = "None";
+            }
         }
         else if (valueArray[i].parentElement.className == "radioButton") {
             if (valueArray[i].checked) {
@@ -225,6 +262,10 @@ slider.oninput = () => { //we define an event handler for the oninput event list
 
 setInterval(() => {
     if (isTimerRunning()) {
+        if (!timerRunningSwitch) {
+            timerRunningSwitch = true;
+            toggleTimerInfo.style.display = "inline";
+        }
         runningTimerArray[0].decrementDuration();
         setRunningIndicator(true);
         updateRunningName(runningTimerArray[0].name);
@@ -233,6 +274,10 @@ setInterval(() => {
         }
     }
     else {
+        if (timerRunningSwitch) {
+            timerRunningSwitch = false;
+            toggleTimerInfo.style.display = "none";
+        }
         resetRunningDisplay();
         return;
     }

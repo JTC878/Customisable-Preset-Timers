@@ -8,8 +8,8 @@
 </head>
 <body class="pageBg">
 
-    <div class="pagetitle">
-        <h1>Customisable Preset Timers</h1>
+    <div class="pagetitle" id="alertInTitleBlock">
+        <h1 style = "display: inline;">Customisable Preset Timers</h1>
     </div>
 
     <div class="buttonposition">
@@ -61,7 +61,7 @@
                             <output id="sliderValue"></output>
                         </div>
                         <div class="notificationCheckmark"> 
-                            <label for="countdownCheckbox1">Browser notification when timer ends</label>
+                            <label for="countdownCheckbox1">Display a notification when the timer ends</label>
                             <input type="checkbox" checked="checked" id="countdownCheckbox1" class="countdownFieldValues"/>
                         </div>
                         <div class="radioButton">
@@ -96,8 +96,11 @@
             </div>
             <div class="runningInfo">
                 <h2>Timer running: <strong id="runningtext">No</strong></h2>
-                <h2>Timer name: <strong id="timername">None</strong></h2>
-                <div class="timerInfo">
+                <span id="timerInfo" style="display:none">
+                    <h2>Timer preset: <strong id="timerpreset">None</strong></h2>
+                    <h2>Timer name: <strong id="timername">None</strong></h2>
+                </span>
+                <div class="durationInfo">
                     <p>Duration of Currently Running Timer</p>
                     <h1 id="durationValue">0</h1>
                 </div>

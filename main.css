@@ -1,7 +1,12 @@
 .pagetitle {
-    display: inline-block;
+    display: block;
+    position: relative;
     font-family:'Franklin Gothic';
     color:darkolivegreen;
+}
+.alertPosition {
+    position: absolute;
+    left: 30%;
 }
 .fullwindow {
     display: block;
@@ -171,7 +176,7 @@
     left: 0px;
     background-color: cadetblue;
 }
-.timerInfo {
+.durationInfo {
     position: absolute;
     top: 40%;
     left: 42%;
@@ -179,8 +184,14 @@
 #runningtext {
     color: red;
 }
+#timerInfo {
+    
+}
+#timerpreset {
+    color: sandybrown;
+}
 #timername {
-    color: gray;
+    color: snow;
 }
 #durationValue {
     position: absolute;

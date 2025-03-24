@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <title>Customisable Preset Timers</title>
+    <link rel="icon" type="image/ico" href="./favicon.ico">
     <link rel="stylesheet" href="main.css" />
     <script src="main.js" async></script>
 </head>
@@ -53,18 +54,62 @@
                     <div class="customisationOptions">
                         <div class="nameInput">
                             <label for="timerObjectName">Customised Timer Name</label>
-                            <input type="text" id="timerObjectName" class="countdownFieldValues"/>
+                            <input type="text" placeholder="MyCountdownTimer" maxlength="20" id="timerObjectName" class="countdownFieldValues"/>
                         </div>
+                        <!-- A provided description of the customised timer can go here-->
                         <div class="durationSlider">
                             <label for="myslider" style="display:block">Duration</label>
                             <input type="range" min="1" max="100" value="50" id="myslider" class="countdownFieldValues"/>
                             <output id="sliderValue"></output>
                         </div>
-                        <div class="notificationCheckmark"> 
-                            <label for="countdownCheckbox1">Display a notification when the timer ends</label>
-                            <input type="checkbox" checked="checked" id="countdownCheckbox1" class="countdownFieldValues"/>
+                        <div class="startTimeInput">
+                            <label for="timeInput1">Starting Time</label>
+                            <input type="time" step="1" id="timeInput1" class="countdownToggleDisable countdownFieldValues" disabled />
+                        </div> 
+                        <div class="weekDayOptions">
+                            <p>Select one or more days when the timer will run</p>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="monday1">Monday</label>
+                                <input type="checkbox" name="monday" id="monday1" class="countdownToggleDisable countdownFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="tuesday1">Tuesday</label>
+                                <input type="checkbox" name="tuesday" id="tuesday1" class="countdownToggleDisable countdownFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="wednesday1">Wednesday</label>
+                                <input type="checkbox" name="wednesday" id="wednesday1" class="countdownToggleDisable countdownFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="thursday1">Thursday</label>
+                                <input type="checkbox" name="thursday" id="thursday1" class="countdownToggleDisable countdownFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup">
+                                <label for="friday1">Friday</label>
+                                <input type="checkbox" name="friday" id="friday1" class="countdownToggleDisable countdownFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="saturday1">Saturday</label>
+                                <input type="checkbox" name="saturday" id="saturday1" class="countdownToggleDisable countdownFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="sunday1">Sunday</label>
+                                <input type="checkbox" name="sunday" id="sunday1" class="countdownToggleDisable countdownFieldValues" disabled />
+                            </div>
                         </div>
-                        <div class="radioButton">
+                        <div class="endNotificationCheckmark"> 
+                            <label for="countdownCheckbox1">Display a notification when the timer ends</label>
+                            <input type="checkbox" id="countdownCheckbox1" class="countdownFieldValues"/>
+                        </div>
+                        <div class="persistentCheckmark"> 
+                            <label for="countdownCheckbox3">Timer persists after running</label>
+                            <input type="checkbox" checked="true" id="countdownCheckbox3" class="countdownToggleDisable countdownFieldValues" disabled />
+                        </div>
+                        <div class="startNotificationCheckmark">
+                            <label for="countdownCheckbox2">Display a notification when the timer starts</label>
+                            <input type="checkbox" id="countdownCheckbox2" class="countdownToggleDisable countdownFieldValues" disabled />
+                        </div>
+                        <div class="runstateButton">
                             <input type="radio" checked="checked" id="run_now" name="radiogroup1" class="countdownFieldValues"/>
                             <label for="run_now">Run Now</label>
                             <input type="radio" id="start_time" name="radiogroup1" />
@@ -107,9 +152,12 @@
                 <input type="button" value="Stop" class="stopButton" />
             </div>
         </div>
+        
         <div id="listactive" style="display:none">
             <div class="windowtitle">
                 <h1>Active Timer List Window</h1>
+            </div>
+            <div class="timerList" id="activeListOfTimers"> 
             </div>
         </div>
     </div>

@@ -123,20 +123,57 @@
     left: 0px;
     background-color: chocolate;
 }
-.radioButton {
+.runstateButton {
     position: absolute;
     bottom: 20%;
     right: 5%;
 }
-.notificationCheckmark {
+.startTimeInput {
     position: absolute;
+    right: 5%;
+    bottom: 35%;
+}
+.weekDayOptions {
+    position: absolute;
+    bottom: 70%;
+    right: 5%;
+    text-align: right;
+}
+.weekDayCheckmarkGroup {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.weekDayCheckmarkGroup input {
+    display: inline-block;
+}
+.weekDayCheckmarkGroup label {
+    display: inline-block;
+}
+.endNotificationCheckmark {
+    position: absolute;
+    left: 5%;
     bottom: 30%;
 }
+.persistentCheckmark {
+    position: absolute; 
+    right: 5%;
+    bottom: 55%;
+}
+.startNotificationCheckmark {
+    position: absolute;
+    right: 5%;
+    bottom: 50%;
+}
 .nameInput {
-
+    position: absolute;
+    top: 10%;
+    left: 5%;
 }
 .durationSlider {
     position: absolute;
+    left: 5%;
     bottom: 10%;
 }
 .applyButton {
@@ -147,6 +184,9 @@
     width: 100px;
     font-size: 20px;
     background-color: aquamarine;
+}
+.countdownToggleDisable {
+    
 }
 .countdownFieldValues {
 }
@@ -217,6 +257,59 @@
     right: 0px;
     bottom: 0px;
 }
+.timerList {
+    position: absolute;
+    top: 15%;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+    background-color: Pink;
+}
+.timerBox {
+    position: relative;
+    display: inline-block;
+    border-style: solid;
+    background-color: #21c64b;
+    padding: 5px;
+    margin: 20px;
+}
+.closeButton {
+    position: absolute;
+    display: inline;
+    background-color: red;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    color: white;
+    right: 5px;
+    top: 5px;
+    cursor: pointer;
+}
+.nameTextColour {
+    color: snow;
+}
+.presetTextColour {
+    color: sandybrown;
+}
+.Running {
+    color: #e03a3c;
+}
+.Waiting {
+    color: #e3ec1b;
+}
+.persistenceTextColourtrue {
+    color: green;
+}
+.persistenceTextColourfalse {
+    color: red;
+}
+.startTimeTextColour {
+    color: snow;
+}
+.weekDaysTextColour {
+    color: snow;
+}
+
 /*Window tab Styles*/
 #homepageButton {
     display: inline-block;
@@ -238,3 +331,8 @@
     position:absolute;
     right:18%;
 }
+
+
+
+#placeholder1 {}
+#placeholder2 {}

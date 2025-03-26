@@ -1,6 +1,5 @@
-let slider = document.getElementById("myslider");
-let sliderValue = document.getElementById("sliderValue");
-let durationValue = document.getElementById("durationValue");
+let sliders = document.getElementsByClassName("allSliders"); //Keep in mind this returns a HTMLCollection NOT an array 
+let durationValue = document.getElementById("durationValue"); //Note: this is for the running window
 let toggleTimerInfo = document.getElementById("timerInfo");
 let runningName = document.getElementById("timername");
 let runningPreset = document.getElementById("timerpreset");
@@ -10,7 +9,9 @@ let timerList = document.getElementById("activeListOfTimers");
 let activeTimerArray = new Array();
 let runningTimerArray = new Array();
 let alertsBuffer = new Array();
+let soundsPlaying = new Array();
 let listActiveElementsArray = new Array();
+let alarmFiles = ["mixkit-classic-short-alarm-993.wav", "mixkit-alarm-tone-996.wav", "mixkit-short-rooster-crowing-2470.wav", "mixkit-game-notification-wave-alarm-987.wav"];
 let timerRunningSwitch = false;
 
 //6 digit numbers for timer ids
@@ -32,6 +33,17 @@ const windowTabNumber = windowTabPairs.length;
 let currentClickedWindowPair = 0; //can be used for validation of the current window
 let currentClickedSidebarPair = 0;
 
+const initialiseSliderListeners = () => {
+    
+    Array.from(sliders).forEach(slider => { //HTMLCollection needs to be converted to an array first before the forEach method can be used 
+        var numberText = slider.parentElement.querySelector('.sliderValues');
+        numberText.innerHTML = slider.value;
+        slider.oninput = () => { //we define an event handler for the oninput event listener of the slider element
+            numberText.innerHTML = slider.value;
+        }
+    });
+}
+
 Date.prototype.getWeekDay = function() { //extend the Date object to include a new method called getWeekDay 
     var weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     return weekday[this.getDay()];
@@ -48,8 +60,7 @@ const convertTimeArrayToString = (array) => {
     hr = 10 > hr ? "0" + hr : hr;
     min = 10 > min ? "0" + min : min;
     sec = 10 > sec ? "0" + sec : sec;
-    timeMsg = `${hr}:${min}:${sec}`;
-    return timeMsg;
+    return `${hr}:${min}:${sec}`;
 }
 
 const updateRunningDuration = (newDuration) => {
@@ -112,6 +123,13 @@ const deleteTimerListing = (timer) => {
     }
 }
 
+const deleteAllTimerListings = () => {
+    for (var i=0; i < listActiveElementsArray.length; i++) {
+        listActiveElementsArray[i].remove();
+    }
+    listActiveElementsArray = [];
+}
+
 const updateTimerListing = (timer) => {
     let IDstring = `${timer.preset}${timer.listingId}`;
     for (var i=0; i < listActiveElementsArray.length; i++) {
@@ -154,7 +172,7 @@ const bufferAlertsRecursion = (alert) => { //this function and the alertBuffer a
 
 
 class Timer { 
-    constructor(name, duration, runstate, endNotify, daysArray, startTime, startNotify, persist) {
+    constructor(name, duration, runstate, endNotify, daysArray, startTime, startNotify, persist, alarmSound, alarmVolume, alarmDuration) {
         this.name = name;
         this.originalDuration = duration;
         this.duration = duration;
@@ -164,6 +182,17 @@ class Timer {
         this.preset = "Countdown";
         this.listingId = Math.floor(Math.random() * (listingIdUpper - listingIdLower + 1) + listingIdLower).toString();
         this.persistence = persist; //whenever the timer moves from active to running array, it will not be removed from the active array if this value is true(in handleTimerRunstate)
+        this.alarmSound = alarmSound;
+        if (alarmSound != "none") {
+            this.alarmOn = true;
+            var n = +alarmSound;
+            this.alarmFile = alarmFiles[n];
+        } 
+        else {
+            this.alarmOn = false;
+        }
+        this.alarmVolume = alarmVolume;
+        this.alarmDuration = alarmDuration;
         if (this.runstate == "start_time") {
             this.daysArray = daysArray;
             this.startTime = startTime;
@@ -193,6 +222,18 @@ class Timer {
         customAlert(message, "#bdd524");
     }
     
+    playAlarm() {
+        var sound = new Audio(`./alarms/${this.alarmFile}`);
+        sound.volume = this.alarmVolume;
+        sound.loop = true;
+        sound.play();
+        soundsPlaying.push(sound);
+        setTimeout(() => {
+            sound.loop = false;
+            if (soundsPlaying.length > 0) {soundsPlaying.pop();}
+        }, this.alarmDuration * 1000);
+    }
+    
 }
 
 
@@ -209,8 +250,8 @@ const clickedButton = (arrayPairIndex) => { //new arrow function - the arrayPair
     }
     var activeWindowElement = document.getElementsByClassName(classnameClicked)[0];
     if (activeWindowElement.id != arrayPairs[arrayPairIndex][0].id) {
-        activeWindowElement.className = classnameButton;
-        arrayPairs[arrayPairIndex][0].className = classnameClicked;
+        activeWindowElement.className = classnameButton + " noHighlighting";
+        arrayPairs[arrayPairIndex][0].className = classnameClicked + " noHighlighting";
         arrayPairs[arrayPairIndex][1].style.display = "block";
         if (originalArrayPairIndex >= windowTabNumber) {
             arrayPairs[currentClickedSidebarPair][1].style.display = "none";
@@ -231,6 +272,9 @@ const timerToActiveArray = () => { //this function will only run when the apply 
     var valueArray = sidebarTabPairs[currentClickedSidebarPair][2];
     let name = "%default%";
     let duration = 0;
+    let alarmVolume = 0.5;
+    let alarmSound = "none";
+    let alarmDuration = 5;
     let runstate = "run_now";
     let endNotification = false;
     let startNotification = false;
@@ -240,8 +284,17 @@ const timerToActiveArray = () => { //this function will only run when the apply 
     var disabledArray = sidebarTabPairs[currentClickedSidebarPair][3];
     let timeDisabled = disabledArray[0].disabled;
     for (let i = 0; i < valueArray.length; i++) { //we parse the array for the values we need into the appropriate object. 
-        if (valueArray[i].parentElement.className == "durationSlider") {
-            duration = valueArray[i].value;
+        if (valueArray[i].parentElement.className == "durationInput") {
+            duration = Math.floor(valueArray[i].value);
+        }
+        else if (valueArray[i].parentElement.className == "alarmVolumeSlider") {
+            alarmVolume = valueArray[i].value * 0.01;
+        }
+        else if (valueArray[i].parentElement.className == "alarmSoundList") {
+            alarmSound = valueArray[i].value;
+        }
+        else if (valueArray[i].parentElement.className == "alarmDurationInput") {
+            alarmDuration = Math.floor(valueArray[i].value);
         }
         else if (valueArray[i].parentElement.className == "nameInput") {
             name = valueArray[i].value;
@@ -295,7 +348,7 @@ const timerToActiveArray = () => { //this function will only run when the apply 
         let today = dateOBJ.getWeekDay();
         daysArray.push(today);
     }
-    var newTimerObject = new Timer(name, duration, runstate, endNotification, daysArray, startTime, startNotification, timerPersistence);
+    var newTimerObject = new Timer(name, duration, runstate, endNotification, daysArray, startTime, startNotification, timerPersistence, alarmSound, alarmVolume, alarmDuration);
     activeTimerArray.push(newTimerObject);
     createTimerListing(newTimerObject);
     activeToRunningArray();
@@ -388,22 +441,32 @@ const resetRunningDisplay = () => {
     updateRunningDuration(0);
 }
 
-const stopTimer = () => {
+const stopTimer = () => { //will also stop all alarms that are playing
     if (isTimerRunning()) {
         if (runningTimerArray[0].persistence) {updateTimerListing(runningTimerArray[0]);}
         runningTimerArray.pop();
         resetRunningDisplay();
         activeToRunningArray();
+        timerRunningSwitch = !(runningTimerArray.length > 0);
+    }
+    if (soundsPlaying.length > 0) {
+        soundsPlaying.forEach(sound => {
+            sound.loop = false;
+        });
+        soundsPlaying = [];
     }
 }
 
-const endTimer = () => { //refactor into class if needed
+const endTimer = () => { //can refactor into class if needed
     if (runningTimerArray.length === 0) {return;}
     if (runningTimerArray[0].endNotification) {
         runningTimerArray[0].displayEndNotification();
     }
     if (runningTimerArray[0].persistence) {
         updateTimerListing(runningTimerArray[0]);
+    }
+    if (runningTimerArray[0].alarmOn && soundsPlaying.length < 1) {
+        runningTimerArray[0].playAlarm();
     }
     runningTimerArray.pop();
     activeToRunningArray();
@@ -416,6 +479,36 @@ const isMatchingTime = (arr1, arr2) => {
     else {
         return false;
     }
+}
+
+const writeToLocalStorage = () => {
+    //Stringify the array that has the active timers into localStorage in a JSON-like format
+    localStorage.clear();
+    localStorage.setItem('timers', JSON.stringify(activeTimerArray));
+    
+}
+
+const readFromLocalStorage = () => {
+    activeTimerArray = [];
+    deleteAllTimerListings();
+    const arrayTimerString = localStorage.getItem('timers');
+    var newArray = JSON.parse(arrayTimerString);
+    //Create a new array from the parsed JSON string so that the new objects have the methods included with the timer class
+    newArray.forEach(object => {
+        if (object.preset == "Countdown") {
+            activeTimerArray.push(new Timer(object.name, object.duration, object.runstate, object.endNotification, 
+            object.daysArray, object.startTime, object.startNotification, object.persistence, object.alarmSound, 
+            object.alarmVolume, object.alarmDuration));
+        }
+    });
+    //activeTimerArray = newArray.map((object) => new Timer(object.name, object.duration, object.runstate, object.endNotification, 
+    //object.daysArray, object.startTime, object.startNotification, object.persistence, object.alarmSound, object.alarmVolume, object.alarmDuration));
+    
+    activeTimerArray.forEach(timer => {
+        createTimerListing(timer);
+    });
+    
+    activeToRunningArray();
 }
 
 document.addEventListener("click", (e) => { //pass the event as a parameter to the inline event handler function. 
@@ -443,6 +536,16 @@ document.addEventListener("click", (e) => { //pass the event as a parameter to t
     else if (e.target.className == "stopButton") {
         stopTimer();
     }
+    else if (e.target.id == "importButton") {
+        readFromLocalStorage();
+    }
+    else if (e.target.id == "exportButton") {
+        writeToLocalStorage();
+    }
+    else if (e.target.id == "listClearButton") {
+        deleteAllTimerListings();
+        activeTimerArray = [];
+    }
     else if (e.target.parentElement.className == "runstateButton") { 
         //use currentClickedSidebarPair to determine which preset window you are currently on
         let currentRunstateButtons = sidebarTabPairs[currentClickedSidebarPair][3];
@@ -459,11 +562,7 @@ document.addEventListener("click", (e) => { //pass the event as a parameter to t
     }
 });
 
-sliderValue.innerHTML = slider.value;
-slider.oninput = () => { //we define an event handler for the oninput event listener of the slider element
-    sliderValue.innerHTML = slider.value;
-}
-
+initialiseSliderListeners();
 
 setInterval(() => { 
     //For every second we want to check each Timer in the activeTimerArray and if their startTime and days is equal to the currentTime and day 
@@ -504,14 +603,8 @@ setInterval(() => {
 }, 1000);
 
 
-//WHEN I WAKE UP:  Add a close button to remove a timer listing. Add persistence and start notification options(greyed out when runnow is picked). Try and implement an alarm sound, play around with it. Start the next timer preset customisation page.
+
+//Add an import and export button. Create a pause button in the running window. Start the next timer preset customisation page.
 //Add currenttime which updates somewhere on the page. 
 
-
-//TODAY I WANT TO GET DONE: Implement all javascript for the starttime customisation options such as weekday and time. Display the time and weekday settings in listactive, it can be very simple.  Try and implement an alarm sound, play around with it. Start the next timer preset customisation page. If possible research how you will implement export and import buttons.    
-//In listactive I want to display: name, preset,  runstate, starttime, list of weekdays in this order(I can also add duration but its not a priority) it should be a similar implementation to customAlert.
-//I should also add a persistence customisation option which will never delete the timer from the activeArray.
-
-//TODO define the PRESET names that you will be including to meet the requirements. Such as countdown timers, stopwatch, pomodoro timer etc.. 
-//TODO add more customisation options such as browser notification when timer ends, possibly an alarm sound, alarm volume and duration, start times(time of day and days of the week should be greyed out until the option is chosen)
-//For audio use the Audio object in javascript such as new Audio(""); and .play();
+//PRESET names countdown timers, stopwatch, pomodoro timer etc.. 

@@ -14,10 +14,10 @@
     </div>
 
     <div class="buttonposition">
-        <div class="clickedButton" id="homepageButton">Homepage</div>
-        <div class="button" id="customiseButton">Customise</div>
-        <div class="button" id="runningButton">Running</div>
-        <div class="button" id="listactiveButton">ListActive</div>
+        <div class="clickedButton noHighlighting" id="homepageButton">Homepage</div>
+        <div class="button noHighlighting" id="customiseButton">Customise</div>
+        <div class="button noHighlighting" id="runningButton">Running</div>
+        <div class="button noHighlighting" id="listactiveButton">ListActive</div>
     </div>
 
     <div class="fullwindow">
@@ -41,6 +41,7 @@
                     <li>Alarm volume</li>
                     <li>Alarm duration</li>
                 </ul>
+                <p>Import and export buttons save/read the state of all timers configured with a start time which would be seen on the active list tab(ListActive)</p>
             </div>
         </div>
 
@@ -57,10 +58,28 @@
                             <input type="text" placeholder="MyCountdownTimer" maxlength="20" id="timerObjectName" class="countdownFieldValues"/>
                         </div>
                         <!-- A provided description of the customised timer can go here-->
-                        <div class="durationSlider">
-                            <label for="myslider" style="display:block">Duration</label>
-                            <input type="range" min="1" max="100" value="50" id="myslider" class="countdownFieldValues"/>
-                            <output id="sliderValue"></output>
+                        <div class="alarmVolumeSlider">
+                            <label for="countdownslider1" style="display:block">Alarm Volume</label>
+                            <input type="range" min="1" max="100" value="50" id="countdownslider1" class="countdownFieldValues allSliders"/>
+                            <output class="sliderValues"></output>
+                        </div>
+                        <div class="alarmSoundList"> 
+                            <label for="alarmSounds">Choose an alarm to play when the timer ends</label>
+                            <select id="alarmSounds" class="countdownFieldValues"> 
+                                <option value="none">No Alarm</option>
+                                <option value="0">Classic</option>
+                                <option value="1">Tone</option>
+                                <option value="2">Rooster</option>
+                                <option value="3">Retro</option>
+                            </select>
+                        </div>
+                        <div class="alarmDurationInput">
+                            <label for="durationinput2">Alarm Duration</label>
+                            <input type="number" min="1" max="120" step="1" value="0" id="durationinput2" class="countdownFieldValues"/>
+                        </div>
+                        <div class="durationInput">
+                            <label for="durationinput1" style="display:block">Timer Duration</label>
+                            <input type="number" min="1" max="1000000" step="1" value="0" id="durationinput1" class="countdownFieldValues"/>
                         </div>
                         <div class="startTimeInput">
                             <label for="timeInput1">Starting Time</label>
@@ -138,6 +157,7 @@
         <div id="running" style="display:none">
             <div class="windowtitle">
                 <h1>Running Window</h1>
+                <p>Pressing the stop button will also stop any alarms</p>
             </div>
             <div class="runningInfo">
                 <h2>Timer running: <strong id="runningtext">No</strong></h2>
@@ -156,11 +176,16 @@
         <div id="listactive" style="display:none">
             <div class="windowtitle">
                 <h1>Active Timer List Window</h1>
+                <label for="listClearButton"></label>
+                <input type="button" value="Clear List" id="listClearButton"/>
             </div>
             <div class="timerList" id="activeListOfTimers"> 
             </div>
         </div>
     </div>
+    
+    <div id="importButton" class="noHighlighting">IMPORT</div>
+    <div id="exportButton" class="noHighlighting">EXPORT</div>
 
     <!--<iframe src="homepage.html"></iframe>-->
 </body>

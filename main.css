@@ -1,3 +1,6 @@
+body {
+    position: relative;
+}
 .pagetitle {
     display: block;
     position: relative;
@@ -122,6 +125,7 @@
     right: 0px;
     left: 0px;
     background-color: chocolate;
+    font-size: 20px;
 }
 .runstateButton {
     position: absolute;
@@ -135,7 +139,7 @@
 }
 .weekDayOptions {
     position: absolute;
-    bottom: 70%;
+    bottom: 65%;
     right: 5%;
     text-align: right;
 }
@@ -171,10 +175,25 @@
     top: 10%;
     left: 5%;
 }
-.durationSlider {
+.durationInput {
     position: absolute;
     left: 5%;
     bottom: 10%;
+}
+.alarmVolumeSlider {
+    position: absolute;
+    left: 5%;
+    top: 40%;
+}
+.alarmSoundList {
+    position: absolute; 
+    left: 5%;
+    top: 30%;
+}
+.alarmDurationInput {
+    position: absolute;
+    left: 5%;
+    top: 50%;
 }
 .applyButton {
     position: absolute;
@@ -184,6 +203,7 @@
     width: 100px;
     font-size: 20px;
     background-color: aquamarine;
+    cursor: pointer;
 }
 .countdownToggleDisable {
     
@@ -246,6 +266,7 @@
     width: 100px;
     font-size: 20px;
     background-color: darkred;
+    cursor: pointer;
 } 
 /* --------ListActive Window Styles-------- */
 #listactive {
@@ -257,6 +278,36 @@
     right: 0px;
     bottom: 0px;
 }
+#importButton {
+    position: fixed;
+    left: 5%;
+    bottom: 5%;
+    height: 50px;
+    width: 100px;
+    font-size: 20px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 50px;
+    background-color: #d7ec24;
+    border-style: solid;
+    border-width: 5px;
+    cursor: pointer;
+} 
+#exportButton {
+    position: fixed;
+    right: 5%;
+    bottom: 5%;
+    height: 50px;
+    width: 100px;
+    font-size: 20px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 50px;
+    background-color: #5fd8c2;
+    border-style: solid;
+    border-width: 5px;
+    cursor: pointer;
+}
 .timerList {
     position: absolute;
     top: 15%;
@@ -264,6 +315,7 @@
     right: 0px;
     left: 0px;
     background-color: Pink;
+    overflow-y: auto;
 }
 .timerBox {
     position: relative;
@@ -331,8 +383,13 @@
     position:absolute;
     right:18%;
 }
+.noHighlighting {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 
-
-
+/* Presets */
 #placeholder1 {}
 #placeholder2 {}

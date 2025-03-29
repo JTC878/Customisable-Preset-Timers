@@ -118,15 +118,6 @@ body {
 .clickedSidebarButton {
     background-color:green;
 }
-.customisationOptions {
-    position: absolute;
-    top: 15%;
-    bottom: 0px;
-    right: 0px;
-    left: 0px;
-    background-color: chocolate;
-    font-size: 20px;
-}
 .runstateButton {
     position: absolute;
     bottom: 20%;
@@ -205,18 +196,57 @@ body {
     background-color: aquamarine;
     cursor: pointer;
 }
+/*Preset Specific Customisations*/
 .countdownToggleDisable {
     
 }
 .countdownFieldValues {
 }
+.alarmToggleDisable {
+}
+.alarmFieldValues {
+}
 #countdownTimer {    
+}
+#alarmTimer {
+}
+#stopwatchTimer {
 }
 #countdownTimerButton {
     top:0px;
 }
-#exampletimerButton2 {
+#alarmTimerButton {
     top: 70px;
+}
+#stopwatchTimerButton {
+    top: 141px;
+}
+.countdownCustomisationOptions {
+    position: absolute;
+    top: 15%;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+    background-color: chocolate;
+    font-size: 20px;
+}
+.alarmCustomisationOptions {
+    position: absolute;
+    top: 15%;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+    background-color: #21c64b;
+    font-size: 20px;
+}
+.stopwatchCustomisationOptions {
+    position: absolute;
+    top: 15%;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+    background-color: #911eb0;
+    font-size: 20px;
 }
 /* --------Running Window Styles-------- */
 #running {
@@ -390,6 +420,5 @@ body {
     user-select: none;
 }
 
-/* Presets */
 #placeholder1 {}
 #placeholder2 {}

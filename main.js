@@ -26,7 +26,8 @@ let windowTabPairs = [
 
 let sidebarTabPairs = [
     [document.getElementById("countdownTimerButton"), document.getElementById("countdownTimer"), document.getElementsByClassName("countdownFieldValues"), document.getElementsByClassName("countdownToggleDisable")],
-    [document.getElementById("exampletimerButton2"), document.getElementById("example2"), document.getElementById("placeholder1"), document.getElementById("placeholder2")]];
+    [document.getElementById("alarmTimerButton"), document.getElementById("alarmTimer"), document.getElementsByClassName("alarmFieldValues"), document.getElementsByClassName("alarmToggleDisable")],
+    [document.getElementById("stopwatchTimerButton"), document.getElementById("stopwatchTimer"), document.getElementsByClassName("stopwatchFieldValues"), document.getElementsByClassName("stopwatchToggleDisable")]];
 
 const windowTabNumber = windowTabPairs.length;
 
@@ -100,6 +101,7 @@ const getTimerListingInnerHtml = (timer) => {
 const createTimerListing = (timer) => {
     const timerListing = document.createElement("div");
     timerListing.classList.add("timerBox");
+    timerListing.style.backgroundColor = timer.presetColour;
     timerListing.id = `${timer.preset}${timer.listingId}`;
     timerListing.innerHTML = getTimerListingInnerHtml(timer);
     listActiveElementsArray.push(timerListing);
@@ -171,7 +173,7 @@ const bufferAlertsRecursion = (alert) => { //this function and the alertBuffer a
 }
 
 
-class Timer { 
+/*class Timer { 
     constructor(name, duration, runstate, endNotify, daysArray, startTime, startNotify, persist, alarmSound, alarmVolume, alarmDuration) {
         this.name = name;
         this.originalDuration = duration;
@@ -234,8 +236,192 @@ class Timer {
         }, this.alarmDuration * 1000);
     }
     
+}*/
+
+class CountdownTimer { 
+    constructor(name, duration, runstate, endNotify, daysArray, startTime, startNotify, persist, alarmSound, alarmVolume, alarmDuration) {
+        this.name = name;
+        this.originalDuration = duration;
+        this.duration = duration;
+        this.runstate = runstate;
+        this.endNotification = endNotify;
+        this.startNotification = startNotify; 
+        this.preset = "Countdown";
+        this.presetColour = "chocolate";
+        this.listingId = Math.floor(Math.random() * (listingIdUpper - listingIdLower + 1) + listingIdLower).toString();
+        this.persistence = persist; //whenever the timer moves from active to running array, it will not be removed from the active array if this value is true(in handleTimerRunstate)
+        this.alarmSound = alarmSound;
+        if (alarmSound != "none") {
+            this.alarmOn = true;
+            var n = +alarmSound;
+            this.alarmFile = alarmFiles[n];
+        } 
+        else {
+            this.alarmOn = false;
+        }
+        this.alarmVolume = alarmVolume;
+        this.alarmDuration = alarmDuration;
+        if (this.runstate == "start_time") {
+            this.daysArray = daysArray;
+            this.startTime = startTime;
+        }
+    }
+
+    updateDuration() {
+        let p = Number(this.duration);
+        if (p > 0) {
+            p += -1;
+        }
+        this.duration = p;
+        updateRunningDuration(this.duration);
+    }
+    
+    displayEndNotification() {
+        let message = `A ${this.preset} timer has ended with the name ${this.name.toString()} after ${this.originalDuration} seconds`;
+        customAlert(message, "red");
+        //alert(message); //this can break everything easily if you include attributes wrong, it also pauses all scripts.
+    }
+    
+    displayStartNotification() {
+        let newDate = new Date();
+        let currTime = newDate.getCurrentTime();
+        let timeString = convertTimeArrayToString(currTime);
+        let message = `A ${this.preset} timer has started with the name ${this.name.toString()} at ${timeString}`;
+        customAlert(message, "#bdd524");
+    }
+    
+    playAlarm() {
+        var sound = new Audio(`./alarms/${this.alarmFile}`);
+        sound.volume = this.alarmVolume;
+        sound.loop = true;
+        sound.play();
+        soundsPlaying.push(sound);
+        setTimeout(() => {
+            sound.loop = false;
+            if (soundsPlaying.length > 0) {soundsPlaying.pop();}
+        }, this.alarmDuration * 1000);
+    }
+    
 }
 
+class Alarm { //Alarm is always persistent when you pick the start_time option
+    constructor(name, runstate, daysArray, startTime, startNotify, alarmSound, alarmVolume, alarmDuration) {
+        this.name = name;
+        this.originalDuration = 0;
+        this.duration = 0;
+        this.runstate = runstate;
+        this.endNotification = false;
+        this.startNotification = startNotify; 
+        this.preset = "Alarm";
+        this.presetColour = "#21c64b";
+        this.listingId = Math.floor(Math.random() * (listingIdUpper - listingIdLower + 1) + listingIdLower).toString();
+        this.persistence = false;
+        this.alarmSound = alarmSound;
+        if (alarmSound != "none") {
+            this.alarmOn = true;
+            var n = +alarmSound;
+            this.alarmFile = alarmFiles[n];
+        } 
+        else {
+            this.alarmOn = false;
+        }
+        this.alarmVolume = alarmVolume;
+        this.alarmDuration = alarmDuration;
+        if (this.runstate == "start_time") {
+            this.persistence = true;
+            this.daysArray = daysArray;
+            this.startTime = startTime;
+        }
+    }
+
+    updateDuration() {}
+    
+    displayEndNotification() {}
+    
+    displayStartNotification() {
+        let newDate = new Date();
+        let currTime = newDate.getCurrentTime();
+        let timeString = convertTimeArrayToString(currTime);
+        let message = `An ${this.preset} has started with the name ${this.name.toString()} at ${timeString} it will run for ${this.alarmDuration} seconds`;
+        customAlert(message, "#21c64b");
+    }
+    
+    playAlarm() {
+        var sound = new Audio(`./alarms/${this.alarmFile}`);
+        sound.volume = this.alarmVolume;
+        sound.loop = true;
+        sound.play();
+        soundsPlaying.push(sound);
+        setTimeout(() => {
+            sound.loop = false;
+            if (soundsPlaying.length > 0) {soundsPlaying.pop();}
+        }, this.alarmDuration * 1000);
+    }
+    
+}
+
+class Stopwatch { //Stopwatch updateDuration will increment the duration forever, the user should press the stop button in the running window to stop it. Alarm should be played when stopwatch starts.
+    constructor(name, runstate, daysArray, startTime, startNotify, persist, alarmSound, alarmVolume, alarmDuration) {
+        this.name = name;
+        this.originalDuration = 0;
+        this.duration = 0;
+        this.runstate = runstate;
+        this.endNotification = false;
+        this.startNotification = startNotify; 
+        this.preset = "Stopwatch";
+        this.presetColour = "#911eb0";
+        this.listingId = Math.floor(Math.random() * (listingIdUpper - listingIdLower + 1) + listingIdLower).toString();
+        this.persistence = persist; 
+        this.alarmSound = alarmSound;
+        if (alarmSound != "none") {
+            this.alarmOn = true;
+            var n = +alarmSound;
+            this.alarmFile = alarmFiles[n];
+        } 
+        else {
+            this.alarmOn = false;
+        }
+        this.alarmVolume = alarmVolume;
+        this.alarmDuration = alarmDuration;
+        if (this.runstate == "start_time") {
+            this.daysArray = daysArray;
+            this.startTime = startTime;
+        }
+    }
+
+    updateDuration() {
+        let p = Number(this.duration);
+        if (p == 0 && this.alarmOn) {
+            this.playAlarm();
+        }
+        p += 1;
+        this.duration = p;
+        updateRunningDuration(this.duration);
+    }
+    
+    displayEndNotification() {}
+    
+    displayStartNotification() {
+        let newDate = new Date();
+        let currTime = newDate.getCurrentTime();
+        let timeString = convertTimeArrayToString(currTime);
+        let message = `A ${this.preset} timer has started with the name ${this.name.toString()} at ${timeString}`;
+        customAlert(message, "#bdd524");
+    }
+    
+    playAlarm() {
+        var sound = new Audio(`./alarms/${this.alarmFile}`);
+        sound.volume = this.alarmVolume;
+        sound.loop = true;
+        sound.play();
+        soundsPlaying.push(sound);
+        setTimeout(() => {
+            sound.loop = false;
+            if (soundsPlaying.length > 0) {soundsPlaying.pop();}
+        }, this.alarmDuration * 1000);
+    }
+    
+}
 
 const clickedButton = (arrayPairIndex) => { //new arrow function - the arrayPairIndex parameter is the arrayPairs index corresponding to the button that has been clicked
     var classnameClicked = "clickedButton";
@@ -348,7 +534,18 @@ const timerToActiveArray = () => { //this function will only run when the apply 
         let today = dateOBJ.getWeekDay();
         daysArray.push(today);
     }
-    var newTimerObject = new Timer(name, duration, runstate, endNotification, daysArray, startTime, startNotification, timerPersistence, alarmSound, alarmVolume, alarmDuration);
+    if (currentClickedSidebarPair == 0) {
+        var newTimerObject = new CountdownTimer(name, duration, runstate, endNotification, daysArray, startTime, startNotification, timerPersistence, alarmSound, alarmVolume, alarmDuration);
+    }
+    else if (currentClickedSidebarPair == 1) {
+        var newTimerObject = new Alarm(name, runstate, daysArray, startTime, startNotification, alarmSound, alarmVolume, alarmDuration);
+    }
+    else if (currentClickedSidebarPair == 2) {
+        var newTimerObject = new Stopwatch(name, runstate, daysArray, startTime, startNotification, timerPersistence, alarmSound, alarmVolume, alarmDuration);
+    }
+    else {
+        var newTimerObject = new CountdownTimer(name, duration, runstate, endNotification, daysArray, startTime, startNotification, timerPersistence, alarmSound, alarmVolume, alarmDuration);
+    }
     activeTimerArray.push(newTimerObject);
     createTimerListing(newTimerObject);
     activeToRunningArray();
@@ -442,18 +639,18 @@ const resetRunningDisplay = () => {
 }
 
 const stopTimer = () => { //will also stop all alarms that are playing
+    if (soundsPlaying.length > 0) {
+        soundsPlaying.forEach(sound => {
+            sound.loop = false;
+        });
+        soundsPlaying = [];
+    }
     if (isTimerRunning()) {
         if (runningTimerArray[0].persistence) {updateTimerListing(runningTimerArray[0]);}
         runningTimerArray.pop();
         resetRunningDisplay();
         activeToRunningArray();
         timerRunningSwitch = !(runningTimerArray.length > 0);
-    }
-    if (soundsPlaying.length > 0) {
-        soundsPlaying.forEach(sound => {
-            sound.loop = false;
-        });
-        soundsPlaying = [];
     }
 }
 
@@ -481,14 +678,14 @@ const isMatchingTime = (arr1, arr2) => {
     }
 }
 
-const writeToLocalStorage = () => {
+const writeJSONToLocalStorage = () => {
     //Stringify the array that has the active timers into localStorage in a JSON-like format
     localStorage.clear();
     localStorage.setItem('timers', JSON.stringify(activeTimerArray));
     
 }
 
-const readFromLocalStorage = () => {
+const readJSONFromLocalStorage = () => {
     activeTimerArray = [];
     deleteAllTimerListings();
     const arrayTimerString = localStorage.getItem('timers');
@@ -496,9 +693,16 @@ const readFromLocalStorage = () => {
     //Create a new array from the parsed JSON string so that the new objects have the methods included with the timer class
     newArray.forEach(object => {
         if (object.preset == "Countdown") {
-            activeTimerArray.push(new Timer(object.name, object.duration, object.runstate, object.endNotification, 
+            activeTimerArray.push(new CountdownTimer(object.name, object.duration, object.runstate, object.endNotification, 
             object.daysArray, object.startTime, object.startNotification, object.persistence, object.alarmSound, 
             object.alarmVolume, object.alarmDuration));
+        } else if (object.preset == "Alarm") {
+            activeTimerArray.push(new Alarm(object.name, object.runstate, object.daysArray, object.startTime, object.startNotification, 
+            object.alarmSound, object.alarmVolume, object.alarmDuration));
+        }
+        else if (object.preset == "Stopwatch") {
+            activeTimerArray.push(new Stopwatch(object.name, object.runstate, object.daysArray, object.startTime, object.startNotification, 
+            object.persistence, object.alarmSound, object.alarmVolume, object.alarmDuration));
         }
     });
     //activeTimerArray = newArray.map((object) => new Timer(object.name, object.duration, object.runstate, object.endNotification, 
@@ -527,8 +731,11 @@ document.addEventListener("click", (e) => { //pass the event as a parameter to t
     else if (e.target.id == "countdownTimerButton" || e.target.parentElement.id == "countdownTimerButton") {
         clickedButton(4);
     }
-    else if (e.target.id == "exampletimerButton2" || e.target.parentElement.id == "exampletimerButton2") {
+    else if (e.target.id == "alarmTimerButton" || e.target.parentElement.id == "alarmTimerButton") {
         clickedButton(5);
+    }
+    else if (e.target.id == "stopwatchTimerButton" || e.target.parentElement.id == "stopwatchTimerButton") {
+        clickedButton(6);
     }
     else if (e.target.className == "applyButton") {
         timerToActiveArray();
@@ -537,10 +744,10 @@ document.addEventListener("click", (e) => { //pass the event as a parameter to t
         stopTimer();
     }
     else if (e.target.id == "importButton") {
-        readFromLocalStorage();
+        readJSONFromLocalStorage();
     }
     else if (e.target.id == "exportButton") {
-        writeToLocalStorage();
+        writeJSONToLocalStorage();
     }
     else if (e.target.id == "listClearButton") {
         deleteAllTimerListings();
@@ -549,12 +756,12 @@ document.addEventListener("click", (e) => { //pass the event as a parameter to t
     else if (e.target.parentElement.className == "runstateButton") { 
         //use currentClickedSidebarPair to determine which preset window you are currently on
         let currentRunstateButtons = sidebarTabPairs[currentClickedSidebarPair][3];
-        if (e.target.id == "start_time") {
+        if (e.target.classList.contains("start_time")) {
             for (var i=0; i < currentRunstateButtons.length; i++) {
                 currentRunstateButtons[i].disabled = false;
             }
         }
-        else if (e.target.id == "run_now") {
+        else if (e.target.classList.contains("run_now")) {
             for (var i=0; i < currentRunstateButtons.length; i++) {
                 currentRunstateButtons[i].disabled = true;
             }
@@ -575,7 +782,7 @@ setInterval(() => {
             updateRunningName(runningTimerArray[0].name);
             updateRunningPreset(runningTimerArray[0].preset);
         }
-        runningTimerArray[0].decrementDuration();
+        runningTimerArray[0].updateDuration();
         if (Number(runningTimerArray[0].duration) === 0) {
             endTimer();
         }
@@ -587,7 +794,7 @@ setInterval(() => {
             resetRunningDisplay();
         }
     }
-    if (activeTimerArray.length > 0) {
+    if (activeTimerArray.length > 0) { //Check all active timers against the current local time
         let time = new Date();
         let todaysDay = time.getWeekDay();
         let currentTime = time.getCurrentTime();

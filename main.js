@@ -3,6 +3,7 @@ let durationValue = document.getElementById("durationValue"); //Note: this is fo
 let toggleTimerInfo = document.getElementById("timerInfo");
 let runningName = document.getElementById("timername");
 let runningPreset = document.getElementById("timerpreset");
+let runningPomodoro = document.getElementById("pomodoroRunning");
 let runningIndicator = document.getElementById("runningtext");
 let pageTitle = document.getElementById("alertInTitleBlock");
 let timerList = document.getElementById("activeListOfTimers");
@@ -27,7 +28,8 @@ let windowTabPairs = [
 let sidebarTabPairs = [
     [document.getElementById("countdownTimerButton"), document.getElementById("countdownTimer"), document.getElementsByClassName("countdownFieldValues"), document.getElementsByClassName("countdownToggleDisable")],
     [document.getElementById("alarmTimerButton"), document.getElementById("alarmTimer"), document.getElementsByClassName("alarmFieldValues"), document.getElementsByClassName("alarmToggleDisable")],
-    [document.getElementById("stopwatchTimerButton"), document.getElementById("stopwatchTimer"), document.getElementsByClassName("stopwatchFieldValues"), document.getElementsByClassName("stopwatchToggleDisable")]];
+    [document.getElementById("stopwatchTimerButton"), document.getElementById("stopwatchTimer"), document.getElementsByClassName("stopwatchFieldValues"), document.getElementsByClassName("stopwatchToggleDisable")],
+    [document.getElementById("pomodoroTimerButton"), document.getElementById("pomodoroTimer"), document.getElementsByClassName("pomodoroFieldValues"), document.getElementsByClassName("pomodoroToggleDisable")]];
 
 const windowTabNumber = windowTabPairs.length;
 
@@ -423,6 +425,82 @@ class Stopwatch { //Stopwatch updateDuration will increment the duration forever
     
 }
 
+class PomodoroTimer {
+    constructor(name, duration1, duration2, runstate, endNotify1, endNotify2, daysArray, startTime, 
+    startNotify, persist, alarmSound1, alarmSound2, alarmVolume1, alarmVolume2, alarmDuration1, alarmDuration2) { 
+        this.studyTimer = new CountdownTimer("Work Timer", duration1, "run_now", endNotify1, [], [], false, false, alarmSound1, alarmVolume1, alarmDuration1); 
+        this.restTimer = new CountdownTimer("Rest Timer", duration2, "run_now", endNotify2, [], [], false, false, alarmSound2, alarmVolume2, alarmDuration2);
+        this.name = name;
+        this.duration = 1;
+        this.preset = "Pomodoro";
+        this.presetColour = "#d61b65";
+        this.listingId = Math.floor(Math.random() * (listingIdUpper - listingIdLower + 1) + listingIdLower).toString();
+        this.persistence = persist;
+        this.runstate = runstate;
+        this.startNotification = startNotify;
+        this.endNotification = false;
+        this.studyTimerRunning = true;
+        if (this.runstate == "start_time") {
+            this.daysArray = daysArray;
+            this.startTime = startTime;
+        }
+    }
+    
+    updateDuration() {
+        if (this.studyTimerRunning) {
+            this.studyTimer.updateDuration();
+            if (this.studyTimer.duration == 0) {
+                this.endTimer(this.studyTimer);
+            }
+        } 
+        else {
+            this.restTimer.updateDuration();
+            if (this.restTimer.duration == 0) {
+                this.endTimer(this.restTimer);
+            }
+        }
+    }
+    
+    updateRunningTimerText() {
+        let updatetext = document.getElementById("pomotimerrunning");
+        if (this.studyTimerRunning) {
+            updatetext.innerHTML = "Work Timer";
+            updatetext.style.color = "#b8781c";
+        } 
+        else {
+            updatetext.innerHTML = "Rest Timer";
+            updatetext.style.color = "#00e8f0";
+        }
+    }
+    
+    displayEndNotification() {}
+    
+    displayStartNotification() {
+        let newDate = new Date();
+        let currTime = newDate.getCurrentTime();
+        let timeString = convertTimeArrayToString(currTime);
+        let message = `A ${this.preset} timer has started with the name ${this.name.toString()} at ${timeString}`;
+        customAlert(message, "#bdd524");
+    }
+    
+    playAlarm() {}
+
+    endTimer(timer) {
+        if (timer.endNotification) {
+            timer.displayEndNotification();
+        }
+        if (timer.alarmOn && soundsPlaying.length < 1) {
+            timer.playAlarm();
+        }
+        timer.duration = timer.originalDuration;
+        this.studyTimerRunning = !(this.studyTimerRunning);
+        this.updateRunningTimerText();
+    }
+    
+} //this will be a class composed of two countdown timers, this timer will loop forever until the stop button is pressed by the user.
+
+
+
 const clickedButton = (arrayPairIndex) => { //new arrow function - the arrayPairIndex parameter is the arrayPairs index corresponding to the button that has been clicked
     var classnameClicked = "clickedButton";
     var classnameButton = "button";
@@ -469,17 +547,42 @@ const timerToActiveArray = () => { //this function will only run when the apply 
     var startTime = false;
     var disabledArray = sidebarTabPairs[currentClickedSidebarPair][3];
     let timeDisabled = disabledArray[0].disabled;
+    var isPomodoro = false;
+    if (currentClickedSidebarPair == 3) {
+        isPomodoro = true;
+        let duration2 = 0;
+        let alarmVolume2 = 0.5;
+        let alarmSound2 = "none";
+        let alarmDuration2 = 5;
+        let endNotification2 = false;
+    }
     for (let i = 0; i < valueArray.length; i++) { //we parse the array for the values we need into the appropriate object. 
         if (valueArray[i].parentElement.className == "durationInput") {
+            if (isPomodoro && valueArray[i].classList.contains("restValue")) {
+                duration2 = Math.floor(valueArray[i].value);
+                continue;
+            }
             duration = Math.floor(valueArray[i].value);
         }
         else if (valueArray[i].parentElement.className == "alarmVolumeSlider") {
+            if (isPomodoro && valueArray[i].classList.contains("restValue")) {
+                alarmVolume2 = valueArray[i].value * 0.01;
+                continue;
+            }
             alarmVolume = valueArray[i].value * 0.01;
         }
         else if (valueArray[i].parentElement.className == "alarmSoundList") {
+            if (isPomodoro && valueArray[i].classList.contains("restValue")) {
+                alarmSound2 = valueArray[i].value;
+                continue;
+            }
             alarmSound = valueArray[i].value;
         }
         else if (valueArray[i].parentElement.className == "alarmDurationInput") {
+            if (isPomodoro && valueArray[i].classList.contains("restValue")) {
+                alarmDuration2 = Math.floor(valueArray[i].value);
+                continue;
+            }
             alarmDuration = Math.floor(valueArray[i].value);
         }
         else if (valueArray[i].parentElement.className == "nameInput") {
@@ -497,6 +600,10 @@ const timerToActiveArray = () => { //this function will only run when the apply 
             }
         }
         else if (valueArray[i].parentElement.className == "endNotificationCheckmark") {
+            if (isPomodoro && valueArray[i].classList.contains("restValue")) {
+                endNotification2 = valueArray[i].checked;
+                continue;
+            }
             endNotification = valueArray[i].checked;
         }
         else if (valueArray[i].parentElement.parentElement.className == "weekDayOptions") { 
@@ -542,6 +649,10 @@ const timerToActiveArray = () => { //this function will only run when the apply 
     }
     else if (currentClickedSidebarPair == 2) {
         var newTimerObject = new Stopwatch(name, runstate, daysArray, startTime, startNotification, timerPersistence, alarmSound, alarmVolume, alarmDuration);
+    }
+    else if (currentClickedSidebarPair == 3) {
+        var newTimerObject = new PomodoroTimer(name, duration, duration2, runstate, endNotification, endNotification2, daysArray, startTime, startNotification, timerPersistence, alarmSound, alarmSound2, alarmVolume,
+        alarmVolume2, alarmDuration, alarmDuration2);
     }
     else {
         var newTimerObject = new CountdownTimer(name, duration, runstate, endNotification, daysArray, startTime, startNotification, timerPersistence, alarmSound, alarmVolume, alarmDuration);
@@ -603,6 +714,15 @@ const updateRunningPreset = (newPreset) => {
     runningPreset.innerHTML = newPreset;
 }
 
+const updateRunningPomodoro = (preset) => {
+    if (preset == "Pomodoro") {
+        runningPomodoro.style.display = "block";
+    }
+    else {
+        runningPomodoro.style.display = "none";
+    }
+}
+
 const isTimerRunning = () => {
     if (runningTimerArray.length > 0) {
         return true;
@@ -636,6 +756,7 @@ const resetRunningDisplay = () => {
     updateRunningName("None");
     updateRunningPreset("None");
     updateRunningDuration(0);
+    updateRunningPomodoro("None");
 }
 
 const stopTimer = () => { //will also stop all alarms that are playing
@@ -704,6 +825,11 @@ const readJSONFromLocalStorage = () => {
             activeTimerArray.push(new Stopwatch(object.name, object.runstate, object.daysArray, object.startTime, object.startNotification, 
             object.persistence, object.alarmSound, object.alarmVolume, object.alarmDuration));
         }
+        else if (object.preset == "Pomodoro") {
+            activeTimerArray.push(new PomodoroTimer(object.name, object.studyTimer.originalDuration, object.restTimer.originalDuration, object.runstate, object.studyTimer.endNotification,
+            object.restTimer.endNotification, object.daysArray, object.startTime, object.startNotification, object.persistence, object.studyTimer.alarmSound, object.restTimer.alarmSound, object.studyTimer.alarmVolume,
+            object.restTimer.alarmVolume, object.studyTimer.alarmDuration, object.restTimer.alarmDuration));
+        }
     });
     //activeTimerArray = newArray.map((object) => new Timer(object.name, object.duration, object.runstate, object.endNotification, 
     //object.daysArray, object.startTime, object.startNotification, object.persistence, object.alarmSound, object.alarmVolume, object.alarmDuration));
@@ -736,6 +862,9 @@ document.addEventListener("click", (e) => { //pass the event as a parameter to t
     }
     else if (e.target.id == "stopwatchTimerButton" || e.target.parentElement.id == "stopwatchTimerButton") {
         clickedButton(6);
+    }
+    else if (e.target.id == "pomodoroTimerButton" || e.target.parentElement.id == "pomodoroTimerButton") {
+        clickedButton(7);
     }
     else if (e.target.className == "applyButton") {
         timerToActiveArray();
@@ -781,6 +910,7 @@ setInterval(() => {
             setRunningIndicator(true);
             updateRunningName(runningTimerArray[0].name);
             updateRunningPreset(runningTimerArray[0].preset);
+            updateRunningPomodoro(runningTimerArray[0].preset);
         }
         runningTimerArray[0].updateDuration();
         if (Number(runningTimerArray[0].duration) === 0) {

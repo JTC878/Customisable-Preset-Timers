@@ -212,6 +212,8 @@ body {
 }
 #stopwatchTimer {
 }
+#pomodoroTimer {
+}
 #countdownTimerButton {
     top:0px;
 }
@@ -220,6 +222,9 @@ body {
 }
 #stopwatchTimerButton {
     top: 141px;
+}
+#pomodoroTimerButton {
+    top: 212px;
 }
 .countdownCustomisationOptions {
     position: absolute;
@@ -247,6 +252,15 @@ body {
     left: 0px;
     background-color: #911eb0;
     font-size: 20px;
+}
+.pomodoroCustomisationOptions {
+    position: absolute;
+    top: 15%;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+    background-color: #d61b65;
+    font-size: 16px;
 }
 /* --------Running Window Styles-------- */
 #running {
@@ -279,6 +293,12 @@ body {
 }
 #timerpreset {
     color: sandybrown;
+}
+#pomodoroRunning {
+    display: none;
+}
+#pomotimerrunning {
+    color: #b8781c
 }
 #timername {
     color: snow;

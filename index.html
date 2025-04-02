@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Customisable Preset Timers</title>
+    <link rel="icon" type="image/ico" href="./favicon.ico">
+    <link rel="stylesheet" href="main.css" />
+    <script src="main.js" async></script>
+</head>
+<body class="pageBg">
+
+    <div class="pagetitle" id="alertInTitleBlock">
+        <h1 style = "display: inline;">Customisable Preset Timers</h1>
+    </div>
+
+    <div class="buttonposition">
+        <div class="clickedButton noHighlighting" id="homepageButton">Homepage</div>
+        <div class="button noHighlighting" id="customiseButton">Customise</div>
+        <div class="button noHighlighting" id="runningButton">Running</div>
+        <div class="button noHighlighting" id="listactiveButton">ListActive</div>
+    </div>
+
+    <div class="fullwindow">
+
+        <div id="homepage" style="display: block">
+            <div class="textcontent">
+                <div class="windowtitle">
+                    <h1>Homepage Window</h1>
+                </div>
+                <h2>What is this application?</h2>
+                <p>This is a single page application where you can add multiple timers to different times at different days of the week</p>
+                <p>These timers can be customised from a preset option found in the customise window tab at the top of the page</p>
+                <h3>Customisation includes options such as: </h3>
+                <ul>
+                    <li>Timer name</li>
+                    <li>Start time</li>
+                    <li>End time or duration</li>
+                    <li>Specific days of the week to apply the timer to</li>
+                    <li>Browser notification for start time and end time of timer</li>
+                    <li>Alarm sound(option to import your own alarm sound)</li>
+                    <li>Alarm volume</li>
+                    <li>Alarm duration</li>
+                </ul>
+                <p>Import and export buttons save/read the state of all timers configured with a start time which can be seen on the active list tab(ListActive)</p>
+            </div>
+        </div>
+
+        <div id="customise" style="display: none">
+            <div class="customiseContent">
+                <div id="countdownTimer" style="display: block">
+                    <div class="windowtitle">
+                        <h1>Countdown Timer Preset</h1>
+                    </div>
+                    This is the default preset. The timer is used to count down from a specified duration value. An alarm can be set when duration reaches 0.
+                    <div class="countdownCustomisationOptions">
+                        <div class="nameInput">
+                            <label for="timerObjectName1">Customised Timer Name</label>
+                            <input type="text" placeholder="MyCountdownTimer" maxlength="20" id="timerObjectName1" class="countdownFieldValues"/>
+                        </div>
+                        <!-- A provided description of the customised timer can go here-->
+                        <div class="alarmVolumeSlider">
+                            <label for="countdownslider1" style="display:block">Alarm Volume</label>
+                            <input type="range" min="1" max="100" value="50" id="countdownslider1" class="countdownFieldValues allSliders"/>
+                            <output class="sliderValues"></output>
+                        </div>
+                        <div class="alarmSoundList"> 
+                            <label for="alarmSounds1">Choose an alarm to play when the timer ends</label>
+                            <select id="alarmSounds1" class="countdownFieldValues"> 
+                                <option value="none">No Alarm</option>
+                                <option value="0">Classic</option>
+                                <option value="1">Tone</option>
+                                <option value="2">Rooster</option>
+                                <option value="3">Retro</option>
+                            </select>
+                        </div>
+                        <div class="alarmDurationInput">
+                            <label for="durationinput2">Alarm Duration</label>
+                            <input type="number" min="1" max="120" step="1" value="0" id="durationinput2" class="countdownFieldValues"/>
+                        </div>
+                        <div class="durationInput">
+                            <label for="durationinput1" style="display:block">Timer Duration</label>
+                            <input type="number" min="1" max="1000000" step="1" value="0" id="durationinput1" class="countdownFieldValues"/>
+                        </div>
+                        <div class="startTimeInput">
+                            <label for="timeInput1">Starting Time</label>
+                            <input type="time" step="1" id="timeInput1" class="countdownToggleDisable countdownFieldValues" disabled />
+                        </div> 
+                        <div class="weekDayOptions">
+                            <p>Select one or more days when the timer will run</p>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="monday1">Monday</label>
+                                <input type="checkbox" name="monday" id="monday1" class="countdownToggleDisable countdownFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="tuesday1">Tuesday</label>
+                                <input type="checkbox" name="tuesday" id="tuesday1" class="countdownToggleDisable countdownFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="wednesday1">Wednesday</label>
+                                <input type="checkbox" name="wednesday" id="wednesday1" class="countdownToggleDisable countdownFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="thursday1">Thursday</label>
+                                <input type="checkbox" name="thursday" id="thursday1" class="countdownToggleDisable countdownFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup">
+                                <label for="friday1">Friday</label>
+                                <input type="checkbox" name="friday" id="friday1" class="countdownToggleDisable countdownFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="saturday1">Saturday</label>
+                                <input type="checkbox" name="saturday" id="saturday1" class="countdownToggleDisable countdownFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="sunday1">Sunday</label>
+                                <input type="checkbox" name="sunday" id="sunday1" class="countdownToggleDisable countdownFieldValues" disabled />
+                            </div>
+                        </div>
+                        <div class="endNotificationCheckmark"> 
+                            <label for="countdownCheckbox1">Display a notification when the timer ends</label>
+                            <input type="checkbox" id="countdownCheckbox1" class="countdownFieldValues"/>
+                        </div>
+                        <div class="persistentCheckmark"> 
+                            <label for="countdownCheckbox3">Timer persists after running</label>
+                            <input type="checkbox" checked="true" id="countdownCheckbox3" class="countdownToggleDisable countdownFieldValues" disabled />
+                        </div>
+                        <div class="startNotificationCheckmark">
+                            <label for="countdownCheckbox2">Display a notification when the timer starts</label>
+                            <input type="checkbox" id="countdownCheckbox2" class="countdownToggleDisable countdownFieldValues" disabled />
+                        </div>
+                        <div class="runstateButton">
+                            <input type="radio" checked="checked" id="run_now1" name="radiogroup1" class="countdownFieldValues run_now"/>
+                            <label for="run_now1">Run Now</label>
+                            <input type="radio" id="start_time1" name="radiogroup1" class="start_time"/>
+                            <label for="start_time1">Choose Start Time</label>
+                        </div>
+                        <input type="button" value="Apply" class="applyButton"/>
+                    </div>
+                </div>
+                <div id="alarmTimer" style="display: none">
+                    <div class="windowtitle">
+                        <h1>Alarm Preset</h1>
+                    </div>
+                    This is a simple alarm preset. The timer is intended to be a dedicated alarm set at specific times.
+                    <div class="alarmCustomisationOptions">
+                        <div class="nameInput">
+                            <label for="timerObjectName2">Customised Alarm Name</label>
+                            <input type="text" placeholder="My Alarm" maxlength="20" id="timerObjectName2" class="alarmFieldValues"/>
+                        </div>
+                        <div class="alarmVolumeSlider">
+                            <label for="alarmslider1" style="display:block">Alarm Volume</label>
+                            <input type="range" min="1" max="100" value="50" id="alarmslider1" class="alarmFieldValues allSliders"/>
+                            <output class="sliderValues"></output>
+                        </div>
+                        <div class="alarmSoundList"> 
+                            <label for="alarmSounds2">Choose an alarm sound to play when start time is reached</label>
+                            <select id="alarmSounds2" class="alarmFieldValues"> 
+                                <option value="none">No Alarm</option>
+                                <option value="0">Classic</option>
+                                <option value="1">Tone</option>
+                                <option value="2">Rooster</option>
+                                <option value="3">Retro</option>
+                            </select>
+                        </div>
+                        <div class="alarmDurationInput">
+                            <label for="durationinput3">Alarm Duration</label>
+                            <input type="number" min="1" max="120" step="1" value="0" id="durationinput3" class="alarmFieldValues"/>
+                        </div>
+                        <div class="startTimeInput">
+                            <label for="timeInput2">Starting Time</label>
+                            <input type="time" step="1" id="timeInput2" class="alarmToggleDisable alarmFieldValues" disabled />
+                        </div> 
+                        <div class="weekDayOptions">
+                            <p>Select one or more days for the alarm to be set</p>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="monday2">Monday</label>
+                                <input type="checkbox" name="monday" id="monday2" class="alarmToggleDisable alarmFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="tuesday2">Tuesday</label>
+                                <input type="checkbox" name="tuesday" id="tuesday2" class="alarmToggleDisable alarmFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="wednesday2">Wednesday</label>
+                                <input type="checkbox" name="wednesday" id="wednesday2" class="alarmToggleDisable alarmFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="thursday2">Thursday</label>
+                                <input type="checkbox" name="thursday" id="thursday2" class="alarmToggleDisable alarmFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup">
+                                <label for="friday2">Friday</label>
+                                <input type="checkbox" name="friday" id="friday2" class="alarmToggleDisable alarmFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="saturday2">Saturday</label>
+                                <input type="checkbox" name="saturday" id="saturday2" class="alarmToggleDisable alarmFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="sunday2">Sunday</label>
+                                <input type="checkbox" name="sunday" id="sunday2" class="alarmToggleDisable alarmFieldValues" disabled />
+                            </div>
+                        </div>
+                        <div class="startNotificationCheckmark">
+                            <label for="alarmCheckbox1">Display a notification when the alarm starts</label>
+                            <input type="checkbox" id="alarmCheckbox1" class="alarmToggleDisable alarmFieldValues" disabled />
+                        </div>
+                        <div class="runstateButton">
+                            <input type="radio" checked="checked" id="run_now2" name="radiogroup2" class="alarmFieldValues run_now"/>
+                            <label for="run_now2">Run Now</label>
+                            <input type="radio" id="start_time2" name="radiogroup2" class="start_time"/>
+                            <label for="start_time2">Choose Start Time</label>
+                        </div>
+                        <input type="button" value="Apply" class="applyButton"/>
+                    </div>
+                </div>
+                <div id="stopwatchTimer" style="display: none">
+                    <div class="windowtitle">
+                        <h1>Stopwatch Preset</h1>
+                    </div>
+                    This is a stopwatch timer preset. The stopwatch will increment the duration value and continue running until the user presses the stop button in the running window.
+                    <div class="stopwatchCustomisationOptions">
+                        <div class="nameInput">
+                            <label for="timerObjectName3">Customised Stopwatch Name</label>
+                            <input type="text" placeholder="My Stopwatch" maxlength="20" id="timerObjectName3" class="stopwatchFieldValues"/>
+                        </div>
+                        <div class="alarmVolumeSlider">
+                            <label for="stopwatchslider1" style="display:block">Sound Volume</label>
+                            <input type="range" min="1" max="100" value="50" id="stopwatchslider1" class="stopwatchFieldValues allSliders"/>
+                            <output class="sliderValues"></output>
+                        </div>
+                        <div class="alarmSoundList"> 
+                            <label for="alarmSounds3">Choose a sound to play when the stopwatch starts</label>
+                            <select id="alarmSounds3" class="stopwatchFieldValues"> 
+                                <option value="none">No Alarm</option>
+                                <option value="0">Classic</option>
+                                <option value="1">Tone</option>
+                                <option value="2">Rooster</option>
+                                <option value="3">Retro</option>
+                            </select>
+                        </div>
+                        <div class="alarmDurationInput">
+                            <label for="durationinput4">Sound Duration</label>
+                            <input type="number" min="1" max="120" step="1" value="0" id="durationinput4" class="stopwatchFieldValues"/>
+                        </div>
+                        <div class="startTimeInput">
+                            <label for="timeInput3">Starting Time</label>
+                            <input type="time" step="1" id="timeInput3" class="stopwatchToggleDisable stopwatchFieldValues" disabled />
+                        </div> 
+                        <div class="weekDayOptions">
+                            <p>Select one or more days for when the stopwatch will run</p>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="monday3">Monday</label>
+                                <input type="checkbox" name="monday" id="monday3" class="stopwatchToggleDisable stopwatchFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="tuesday3">Tuesday</label>
+                                <input type="checkbox" name="tuesday" id="tuesday3" class="stopwatchToggleDisable stopwatchFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="wednesday3">Wednesday</label>
+                                <input type="checkbox" name="wednesday" id="wednesday3" class="stopwatchToggleDisable stopwatchFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="thursday3">Thursday</label>
+                                <input type="checkbox" name="thursday" id="thursday3" class="stopwatchToggleDisable stopwatchFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup">
+                                <label for="friday3">Friday</label>
+                                <input type="checkbox" name="friday" id="friday3" class="stopwatchToggleDisable stopwatchFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="saturday3">Saturday</label>
+                                <input type="checkbox" name="saturday" id="saturday3" class="stopwatchToggleDisable stopwatchFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="sunday3">Sunday</label>
+                                <input type="checkbox" name="sunday" id="sunday3" class="stopwatchToggleDisable stopwatchFieldValues" disabled />
+                            </div>
+                        </div>
+                        <div class="persistentCheckmark"> 
+                            <label for="stopwatchCheckbox3">Stopwatch persists in the active timers list after running</label>
+                            <input type="checkbox" checked="true" id="stopwatchCheckbox3" class="stopwatchToggleDisable stopwatchFieldValues" disabled />
+                        </div>
+                        <div class="startNotificationCheckmark">
+                            <label for="stopwatchCheckbox2">Display a notification when the stopwatch starts</label>
+                            <input type="checkbox" id="stopwatchCheckbox2" class="stopwatchToggleDisable stopwatchFieldValues" disabled />
+                        </div>
+                        <div class="runstateButton">
+                            <input type="radio" checked="checked" id="run_now3" name="radiogroup3" class="stopwatchFieldValues run_now"/>
+                            <label for="run_now3">Run Now</label>
+                            <input type="radio" id="start_time3" name="radiogroup3" class="start_time"/>
+                            <label for="start_time3">Choose Start Time</label>
+                        </div>
+                        <input type="button" value="Apply" class="applyButton"/>
+                    </div>
+                </div>
+                <div id="pomodoroTimer" style="display: none">
+                    <div class="windowtitle">
+                        <h1>Pomodoro Preset</h1>
+                    </div>
+                    This is a Pomodoro timer preset. The Pomodoro timer has one countdown timer for working/studying and one timer for resting, it will switch when one ends. 
+                    <div class="pomodoroCustomisationOptions">
+                        <div class="nameInput">
+                            <label for="timerObjectName4">Customised Pomodoro Timer Name</label>
+                            <input type="text" placeholder="My Pomodoro" maxlength="20" id="timerObjectName4" class="pomodoroFieldValues"/>
+                        </div>
+                        <div class="alarmVolumeSlider" style="top: 30%">
+                            <label for="pomodoroslider1" style="display:block">Sound volume for when work ends</label>
+                            <input type="range" min="1" max="100" value="50" id="pomodoroslider1" class="pomodoroFieldValues allSliders"/>
+                            <output class="sliderValues"></output>
+                        </div>
+                        <div class="alarmVolumeSlider">
+                            <label for="pomodoroslider2" style="display:block">Sound volume for when rest ends</label>
+                            <input type="range" min="1" max="100" value="50" id="pomodoroslider2" class="pomodoroFieldValues allSliders restValue"/>
+                            <output class="sliderValues"></output>
+                        </div>
+                        <div class="alarmSoundList" style="top: 15%"> 
+                            <label for="alarmSounds4">Choose a sound to play when work is over</label>
+                            <select id="alarmSounds4" class="pomodoroFieldValues"> 
+                                <option value="none">No Alarm</option>
+                                <option value="0">Classic</option>
+                                <option value="1">Tone</option>
+                                <option value="2">Rooster</option>
+                                <option value="3">Retro</option>
+                            </select>
+                            <p></p>
+                            <label for="alarmSounds5">Choose a sound to play when rest is over</label>
+                            <select id="alarmSounds5" class="pomodoroFieldValues restValue"> 
+                                <option value="none">No Alarm</option>
+                                <option value="0">Classic</option>
+                                <option value="1">Tone</option>
+                                <option value="2">Rooster</option>
+                                <option value="3">Retro</option>
+                            </select>
+                        </div>
+                        <div class="alarmDurationInput">
+                            <label for="durationinput5">Sound Duration for when work ends</label>
+                            <input type="number" min="1" max="120" step="1" value="0" id="durationinput5" class="pomodoroFieldValues"/>
+                            <p></p>
+                            <label for="durationinput6">Sound Duration for when rest ends</label>
+                            <input type="number" min="1" max="120" step="1" value="0" id="durationinput6" class="pomodoroFieldValues restValue"/>
+                        </div>
+                        <div class="durationInput">
+                            <label for="durationinput7" style="display:block">Work Duration</label>
+                            <input type="number" min="1" max="1000000" step="1" value="0" id="durationinput7" class="pomodoroFieldValues"/>
+                            <label for="durationinput8" style="display:block">Rest Duration</label>
+                            <input type="number" min="1" max="1000000" step="1" value="0" id="durationinput8" class="pomodoroFieldValues restValue"/>
+                        </div>
+                        <div class="startTimeInput">
+                            <label for="timeInput4">Starting Time for Pomodoro</label>
+                            <input type="time" step="1" id="timeInput4" class="pomodoroToggleDisable pomodoroFieldValues" disabled />
+                        </div> 
+                        <div class="weekDayOptions">
+                            <p>Select one or more days for when the pomodoro timer will run</p>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="monday4">Monday</label>
+                                <input type="checkbox" name="monday" id="monday4" class="pomodoroToggleDisable pomodoroFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="tuesday4">Tuesday</label>
+                                <input type="checkbox" name="tuesday" id="tuesday4" class="pomodoroToggleDisable pomodoroFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="wednesday4">Wednesday</label>
+                                <input type="checkbox" name="wednesday" id="wednesday4" class="pomodoroToggleDisable pomodoroFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="thursday4">Thursday</label>
+                                <input type="checkbox" name="thursday" id="thursday4" class="pomodoroToggleDisable pomodoroFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup">
+                                <label for="friday4">Friday</label>
+                                <input type="checkbox" name="friday" id="friday4" class="pomodoroToggleDisable pomodoroFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="saturday4">Saturday</label>
+                                <input type="checkbox" name="saturday" id="saturday4" class="pomodoroToggleDisable pomodoroFieldValues" disabled />
+                            </div>
+                            <div class="weekDayCheckmarkGroup"> 
+                                <label for="sunday4">Sunday</label>
+                                <input type="checkbox" name="sunday" id="sunday4" class="pomodoroToggleDisable pomodoroFieldValues" disabled />
+                            </div>
+                        </div>
+                        <div class="endNotificationCheckmark" style="bottom: 25%"> 
+                            <label for="pomodoroCheckbox2">Display a notification when the work timer ends</label>
+                            <input type="checkbox" id="pomodoroCheckbox2" class="pomodoroFieldValues"/>
+                            <p></p>
+                            <label for="pomodoroCheckbox3">Display a notification when the rest timer ends</label>
+                            <input type="checkbox" id="pomodoroCheckbox3" class="pomodoroFieldValues restValue"/>
+                        </div>
+                        <div class="persistentCheckmark"> 
+                            <label for="pomodoroCheckbox1">Pomodoro Timer persists in the active timers list</label>
+                            <input type="checkbox" checked="true" id="pomodoroCheckbox1" class="pomodoroToggleDisable pomodoroFieldValues" disabled />
+                        </div>
+                        <div class="startNotificationCheckmark">
+                            <label for="pomodoroCheckbox4">Display a notification when the pomodoro timer starts</label>
+                            <input type="checkbox" id="pomodoroCheckbox4" class="pomodoroToggleDisable pomodoroFieldValues" disabled />
+                        </div>
+                        <div class="runstateButton">
+                            <input type="radio" checked="checked" id="run_now4" name="radiogroup4" class="pomodoroFieldValues run_now"/>
+                            <label for="run_now4">Run Now</label>
+                            <input type="radio" id="start_time4" name="radiogroup4" class="start_time"/>
+                            <label for="start_time4">Choose Start Time</label>
+                        </div>
+                        <input type="button" value="Apply" class="applyButton"/>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar">
+                <div class="clickedSidebarButton" id="countdownTimerButton">
+                    <div class="rotatedText">Countdown</div>
+                </div>
+                <div class="sidebarButton" id="alarmTimerButton">
+                    <div class="rotatedText">Alarm</div>
+                </div>
+                <div class="sidebarButton" id="stopwatchTimerButton">
+                    <div class="rotatedText">Stopwatch</div>
+                </div>
+                <div class="sidebarButton" id="pomodoroTimerButton"> 
+                    <div class="rotatedText">Pomodoro</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="running" style="display:none">
+            <div class="windowtitle">
+                <h1>Running Window</h1>
+                <p>Pressing the stop button will also stop any alarms</p>
+            </div>
+            <div class="runningInfo">
+                <h2>Timer running: <strong id="runningtext">No</strong></h2>
+                <span id="timerInfo" style="display:none">
+                    <h2>Timer preset: <strong id="timerpreset">None</strong></h2>
+                    <h2>Timer name: <strong id="timername">None</strong></h2>
+                    <h2 id="pomodoroRunning">Pomodoro timer: <strong id="pomotimerrunning">Work Timer</strong></h2>
+                </span>
+                <div class="durationInfo">
+                    <p>Duration of Currently Running Timer</p>
+                    <h1 id="durationValue">0</h1>
+                </div>
+                <input type="button" value="Stop" class="stopButton" />
+            </div>
+        </div>
+        
+        <div id="listactive" style="display:none">
+            <div class="windowtitle">
+                <h1>Active Timer List Window</h1>
+                <label for="listClearButton"></label>
+                <input type="button" value="Clear List" id="listClearButton"/>
+            </div>
+            <div class="timerList" id="activeListOfTimers"> 
+            </div>
+        </div>
+    </div>
+    
+    <div id="importButton" class="noHighlighting">IMPORT</div>
+    <div id="exportButton" class="noHighlighting">EXPORT</div>
+
+    <!--<iframe src="homepage.html"></iframe>-->
+</body>
+<!-- Need to have a window div instead of the iframe which has a box inside, another div inside the box with absolute positioning that toggles the display 'block' or 'none' based on javascript 
+    with the window content inside that div-->
+</html>

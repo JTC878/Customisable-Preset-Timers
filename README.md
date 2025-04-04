@@ -10,5 +10,5 @@ be useful for those who regularly use their device.
 
 ## example
 
-![1](examples/new1.png)
-![2](examples/new2.png)
+![1](examples/new1.PNG)
+![2](examples/new2.PNG)
